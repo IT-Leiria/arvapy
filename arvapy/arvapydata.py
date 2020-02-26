@@ -1,7 +1,5 @@
-from time import sleep
-
 from .arv360stream import Arv360StreamInput
-from .arv360convert import Arv360Convert
+from .arv360convert import Arv360Convert, ConvertProjectionNameToInt, ConvertProjectionList
 
 
 class ArvApyData:
@@ -18,10 +16,14 @@ class ArvApyData:
         self.main_stream.bytes_per_pixel = 1
         self.main_stream.OpenStream()
 
-    def Get360DegreeFrame(self, projection=-1):
+    @staticmethod
+    def Get360DegreeProjections():
+        return ConvertProjectionList()
 
-        # Ensure this variable is an integer
-        projection = int(projection)
+    def Get360DegreeFrame(self, projection="NA"):
+
+        # Convert projection name to number
+        projection = ConvertProjectionNameToInt(projection)
 
         # Get frame from original stream
         frame = self.main_stream.ReadFrame()
