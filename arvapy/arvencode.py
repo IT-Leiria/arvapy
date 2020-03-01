@@ -1,3 +1,6 @@
+import tempfile
+import subprocess
+
 from pathlib import Path
 from os.path import expanduser  # This is needed to swap "~" for $HOME in strings
 
@@ -94,7 +97,13 @@ class ArvApyEncode:
         for cmd in self.enc_cmd:
             print(" ".join(cmd))
 
-    # TODO method that spawns the encoding processes
+    # TODO test this method!
+    def EncodeSequence(self):
+        log_file = tempfile.NamedTemporaryFile(mode="w", prefix="arvapy_360_encode_log_").name
+        with open(log_file, "a") as output_file:
+            # Spawn an encoding process for every QP. Processes are launch sequentially
+            for cmd in self.enc:
+                p = subprocess.call(cmd, stdout=output_file, stderr=output_file)
 
 
 # FOR SELF CONTAINED DEBUG ONLY!! TO BE ERASED IN FINAL VERSION
