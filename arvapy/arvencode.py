@@ -7,6 +7,27 @@ from os.path import expanduser  # This is needed to swap "~" for $HOME in string
 
 class ArvApyEncode:
     def __init__(self, encoder_path):
+        """
+        Initialises an object of the calsse ArvApyEncode
+
+        This constructor initializes an object of the
+        ArvApyEncode Class, responsible for preparing
+        the configurations of the encoding process and
+        launch it.
+
+        Parameters
+        ----------
+        encoder_path : str
+            Path for the encoder executable
+        arg2 : str
+            Description of arg2
+
+        Returns
+        -------
+        ArvApyEncode
+            ArvApyEncode object
+
+        """
         # DEBUG -- PATH MUST BY DYNAMICALLY SET
         self.cfg_search_path = "~/Repos/vtm_360lib"
 
@@ -25,6 +46,21 @@ class ArvApyEncode:
         self.enc_cmd       = []    # Array where all the encogind commands are saved (there should be 1 per qp)
 
     def GetAvailableConfigFiles(self):
+        """
+        Returns list of configuration files
+
+        This function returns a list with the paths for
+        all configuration (*.cfg) files found in the
+        search path.
+
+        Returns
+        -------
+        list
+            list of paths to cfg files
+
+        """
+        # Check if the encoding command as already been generated
+
         cfg_files = [path for path in Path(expanduser(self.cfg_search_path)).rglob("*.cfg")]
         return cfg_files
 
@@ -89,7 +125,12 @@ class ArvApyEncode:
             self.enc_cmd.append(cmd)
 
     def PrintEncodigCommand(self):
-        '''Prints the encoding commands'''
+        """
+        Prints the encoding commands
+
+        This function provides an overview of the commands that were built and
+        are going to be run with the method EncodeSequence.
+        """
         # Check if the encoding command as already been generated
         if not self.enc_cmd:
             raise NameError("Invalid encoding command. Please run GenEncodingCommand method first.")
