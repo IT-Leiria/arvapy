@@ -25,6 +25,28 @@ def GetProjectionList():
     """
     return json.dumps(ArvApyData.Get360DegreeProjections())
 
+@app.route('/get_viewport')
+def GetViewport():
+    """
+    REST API Get Viewport
+
+    This function returns a viewport of the current frame
+
+    Args:
+        x (integer): viewport horizontal center position in degrees
+        y (integer): viewport vertical center position in degrees
+        width (integer): width of the viewport in degree
+        height (integer): height of the viewport in degrees
+
+    Returns:
+        byte array: generated viewport
+    """
+    viewport_x = request.args.get("x", 0)
+    viewport_y = request.args.get("y", 0)
+    viewport_width = request.args.get("width", 90)
+    viewport_height = request.args.get("height", 90)
+    viewport = arvapy.Get360DegreeViewPortFrame( viewport_x, viewport_y, viewport_width, viewport_height)
+    return viewport
 
 @app.route('/get_frame')
 def GetFrame():
