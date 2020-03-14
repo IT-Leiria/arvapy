@@ -1,0 +1,12 @@
+version: '3'
+services:
+  api:
+    image: arvapy
+    ports:
+      - "5000:5000"
+    volumes:
+      - ..:/src/arvapy
+    tmpfs:
+      - /tmp
+    environment:
+      FLASK_ENV: development
