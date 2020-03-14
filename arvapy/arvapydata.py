@@ -1,10 +1,13 @@
 from .arv360stream import Arv360StreamInput
+from .arvencode import ArvApyEncode
 from .arv360convert import Arv360Convert, ConvertProjectionNameToInt, ConvertProjectionList
 
 
 class ArvApyData:
     def __init__(self):
         self.convert_function_module = Arv360Convert()
+        self.encoding_module = ArvApyEncode('path_to_vvc/EncApp')
+        
         self.main_stream = None
         self.min_frame_size = 8
         
@@ -31,6 +34,9 @@ class ArvApyData:
     @staticmethod
     def Get360DegreeProjections():
         return ConvertProjectionList()
+      
+    def GetAvailableConfigFiles(self):
+      return self.encoding_module.GetAvailableConfigFiles()
 
     def Get360DegreeFrame(self, projection="NA"):
 

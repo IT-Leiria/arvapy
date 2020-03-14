@@ -5,7 +5,6 @@
 import json
 from flask import Flask, escape, request
 from arvapy import ArvApyData
-from arvapy import ArvApyEncode
 
 # Create Flask application
 app = Flask(__name__)
@@ -28,8 +27,7 @@ def GetCfgFiles():
         list of paths to cfg files
 
     """
-    enc = ArvApyEncode('path_to_vvc/EncApp')
-    return enc.GetAvailableConfigFiles()
+    return arvapy.GetAvailableConfigFiles()
 
 @app.route('/get_projections')
 def GetProjectionList():
