@@ -8,23 +8,47 @@ from .arvhandleconfig import ReadConfiguration, WriteConfigurationFile, FindLine
 
 
 Command360Convert = "360ConvertApp"
-Default360ConvertConfig =  """InputGeometryType             : 0                                    
-                              SourceFPStructure             : 1 1   0 0 100                        
-                              CodingGeometryType            : 1
-                              CodingFPStructure             : 2 3   4 0 0 0 5 0   3 180 1 270 2 0  
-                              SVideoRotation                : 0 0  0                               
-                              CodingFaceWidth               : 0                                  
-                              CodingFaceHeight              : 0                                  
-                              InterpolationMethodY          : 2
-                              InterpolationMethodC          : 2
-                              FaceSizeAlignment             : 1           
-                              InputBitDepth                 : 8            
-                              InternalBitDepth              : 8
-                              OutputBitDepth                : 8
-                              InputChromaFormat             : 420          
-                              FrameRate                     : 60           
-                              FrameSkip                     : 0            
-                              FramesToBeEncoded             : 999"""
+Default360ConvertConfig = """InputGeometryType             : 0
+                             SourceFPStructure             : 1 1   0 0 100
+                             CodingGeometryType            : 1
+                             CodingFPStructure             : 2 3   4 0 0 0 5 0   3 180 1 270 2 0
+                             SVideoRotation                : 0 0  0
+                             CodingFaceWidth               : 0
+                             CodingFaceHeight              : 0
+                             InterpolationMethodY          : 2
+                             InterpolationMethodC          : 2
+                             FaceSizeAlignment             : 1
+                             InputBitDepth                 : 8
+                             InternalBitDepth              : 8
+                             OutputBitDepth                : 8
+                             InputChromaFormat             : 420
+                             FrameRate                     : 60
+                             FrameSkip                     : 0
+                             FramesToBeEncoded             : 999"""
+
+Config360ConvertProjection = [
+    [0, "ERP",  "Equi-rectangular projection", "1 1   0 0"],
+    [1, "CMP",  "Cube-map projection",         "2 3   4 0 0 0 5 0   3 180 1 270 2 0"],
+    [3, "COHP", "Compact OHP",                 "4 2   2 270  3 90  6 90  7 270  0 270  1 90  4 90  5 270"],
+    [4, "RECT", "Rectilinear projection",      "1 1   0 0"],
+    [5, "CISP", "Compat ISP",                  "4 5   0 180 2 180 4 0 6 180 8 0   1 180 3 180 5 180 7 180 9 180    11 0 13 0 15 0 17 0 19 0   10 180 12 0 14 180 16 0 18 0"]
+]
+
+
+def ConvertProjectionList():
+    available_projections = []
+    for i in range( len(Config360ConvertProjection) ):
+        available_projections.append((Config360ConvertProjection[i][1], Config360ConvertProjection[i][2]))
+    return available_projections
+
+
+def ConvertProjectionNameToInt(projection="NA"):
+    if projection == "NA":
+        return -1
+    for i in range( len(Config360ConvertProjection) ):
+        if Config360ConvertProjection[i][1] == projection:
+            return int(Config360ConvertProjection[i][0])
+    return -1
 
 
 class Arv360Convert(ArvFifo):
@@ -38,9 +62,16 @@ class Arv360Convert(ArvFifo):
         self.send_stream = None
         self.receive_stream = None
 
-    def InitConversion(self, input_video, projection):
+    def InitConversion(self, input_video, projection, width = 0, height = 0, viewport_settings = [] ):
 
         self.is_running = False
+
+        projection_config_type = projection
+        if projection_config_type == -1:
+            # Invalid projection
+            return
+
+        projection_config_fps = Config360ConvertProjection[projection_config_type][3]
 
         # Get default config of conversion function
         self.convert_config = ReadConfiguration(Default360ConvertConfig)
@@ -48,6 +79,15 @@ class Arv360Convert(ArvFifo):
         self.convert_config.append(["SourceWidth", input_video.width])
         self.convert_config.append(["SourceHeight", input_video.height])
         self.convert_config.append(["OutputFile", self.receive_fifo_fname])
+        self.convert_config.append(["CodingGeometryType", projection_config_type])
+        self.convert_config.append(["CodingFPStructure", projection_config_fps])
+        
+        if width > 0:
+          self.convert_config.append(["CodingFaceWidth", width])
+        if height > 0:
+          self.convert_config.append(["CodingFaceHeight", height])
+        if viewport_settings:
+          self.convert_config.append(["ViewPortSettings", viewport_settings])
 
         self.convert_config_fname = tempfile.NamedTemporaryFile(prefix="arvapy_360_convert_config_").name
 
