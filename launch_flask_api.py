@@ -41,6 +41,32 @@ def GetProjectionList():
     """
     return json.dumps(ArvApyData.Get360DegreeProjections())
 
+@app.route('/get_viewport_info')
+def GetViewportInfo():
+    """
+    REST API Get Viewport
+
+    This function returns a viewport of the current frame
+
+    Args:
+        x (integer): viewport horizontal center position in degrees
+        y (integer): viewport vertical center position in degrees
+        width (integer): width of the viewport in degree
+        height (integer): height of the viewport in degrees
+
+    Returns:
+        json object: width and height of the viewport
+    """
+    viewport_x = request.args.get("x", 0)
+    viewport_y = request.args.get("y", 0)
+    viewport_width = request.args.get("width", 90)
+    viewport_height = request.args.get("height", 90)
+    viewport = arvapy.Get360DegreeViewPortFrame( viewport_x, viewport_y, viewport_width, viewport_height)
+    frame_info = {}
+    frame_info['width'] = viewport.width
+    frame_info['height'] = viewport.height
+    return json.dumps(frame_info)
+  
 @app.route('/get_viewport')
 def GetViewport():
     """
@@ -62,8 +88,28 @@ def GetViewport():
     viewport_width = request.args.get("width", 90)
     viewport_height = request.args.get("height", 90)
     viewport = arvapy.Get360DegreeViewPortFrame( viewport_x, viewport_y, viewport_width, viewport_height)
-    return viewport
+    return viewport.data
 
+@app.route('/get_frame_info')
+def GetFrameInfo():
+    """
+    REST API Get Frame
+
+    This function returns a new frame on every call
+
+    Args:
+        projection (string): initials of the planar projection format of the output
+
+    Returns:
+        json object: width and height of the frame in a given projection
+    """
+    projection = request.args.get("projection", "NA")
+    frame = arvapy.Get360DegreeFrame(projection)
+    frame_info = {}
+    frame_info['width'] = frame.width
+    frame_info['height'] = frame.height
+    return json.dumps(frame_info)
+  
 @app.route('/get_frame')
 def GetFrame():
     """
@@ -79,7 +125,7 @@ def GetFrame():
     """
     projection = request.args.get("projection", "NA")
     frame = arvapy.Get360DegreeFrame(projection)
-    return frame
+    return frame.data
 
 
 # Start point

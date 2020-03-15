@@ -30,7 +30,9 @@ class ArvApyEncode:
         """
         # DEBUG -- PATH MUST BY DYNAMICALLY SET
         self.cfg_search_path = "~/Repos/vtm_360lib"
-
+        # self.cfg_search_path = "/src/vtm" # This is path of the codec sources
+        
+        
         # Encoding parameters
         self.encoder_path  = encoder_path
         self.qps           = []    # List of QPs (if more than one is set, a command for each QP is generated)

@@ -3,11 +3,13 @@ import subprocess
 import tempfile
 
 from .arvfifo import ArvFifo
+from .arv360frame import Arv360Frame
 from .arv360stream import Arv360StreamInput, Arv360StreamOutput
 from .arvhandleconfig import ReadConfiguration, WriteConfigurationFile, FindLine, FindLineRegEx
 
 
-Command360Convert = "360ConvertApp"
+Command360Convert = "/src/vtm/bin/360ConvertAppStatic"
+
 Default360ConvertConfig = """InputGeometryType             : 0
                              SourceFPStructure             : 1 1   0 0 100
                              CodingGeometryType            : 1
@@ -27,11 +29,11 @@ Default360ConvertConfig = """InputGeometryType             : 0
                              FramesToBeEncoded             : 999"""
 
 Config360ConvertProjection = [
-    [0, "ERP",  "Equi-rectangular projection", "1 1   0 0"],
-    [1, "CMP",  "Cube-map projection",         "2 3   4 0 0 0 5 0   3 180 1 270 2 0"],
-    [3, "COHP", "Compact OHP",                 "4 2   2 270  3 90  6 90  7 270  0 270  1 90  4 90  5 270"],
-    [4, "RECT", "Rectilinear projection",      "1 1   0 0"],
-    [5, "CISP", "Compat ISP",                  "4 5   0 180 2 180 4 0 6 180 8 0   1 180 3 180 5 180 7 180 9 180    11 0 13 0 15 0 17 0 19 0   10 180 12 0 14 180 16 0 18 0"]
+    ["ERP",  "Equi-rectangular projection", 0, "1 1   0 0"],
+    ["CMP",  "Cube-map projection",         1, "2 3   4 0 0 0 5 0   3 180 1 270 2 0"],
+    ["COHP", "Compact OHP",                 3, "4 2   2 270  3 90  6 90  7 270  0 270  1 90  4 90  5 270"],
+    ["RECT", "Rectilinear projection",      4, "1 1   0 0"],
+    ["CISP", "Compat ISP",                  5, "4 5   0 180 2 180 4 0 6 180 8 0   1 180 3 180 5 180 7 180 9 180    11 0 13 0 15 0 17 0 19 0   10 180 12 0 14 180 16 0 18 0"]
 ]
 
 
@@ -42,12 +44,12 @@ def ConvertProjectionList():
     return available_projections
 
 
-def ConvertProjectionNameToInt(projection="NA"):
-    if projection == "NA":
+def ConvertProjectionNameToInt(projection_name="NA"):
+    if projection_name == "NA":
         return -1
     for i in range( len(Config360ConvertProjection) ):
-        if Config360ConvertProjection[i][1] == projection:
-            return int(Config360ConvertProjection[i][0])
+        if Config360ConvertProjection[i][0] == projection_name:
+            return i
     return -1
 
 
@@ -62,16 +64,16 @@ class Arv360Convert(ArvFifo):
         self.send_stream = None
         self.receive_stream = None
 
-    def InitConversion(self, input_video, projection, width = 0, height = 0, viewport_settings = [] ):
+    def InitConversion(self, input_video, projection_idx, width = 0, height = 0, viewport_settings = [] ):
 
         self.is_running = False
 
-        projection_config_type = projection
-        if projection_config_type == -1:
+        if projection_idx == -1 or projection_idx >= len( Config360ConvertProjection ):
             # Invalid projection
-            return
+            return False
 
-        projection_config_fps = Config360ConvertProjection[projection_config_type][3]
+        projection_config_type = Config360ConvertProjection[projection_idx][2]
+        projection_config_fps = Config360ConvertProjection[projection_idx][3]
 
         # Get default config of conversion function
         self.convert_config = ReadConfiguration(Default360ConvertConfig)
@@ -131,7 +133,7 @@ class Arv360Convert(ArvFifo):
         self.receive_stream.bytes_per_pixel = 1
         self.receive_stream.PrintInfo()
 
-        self.convert_to_projection = projection
+        self.convert_to_projection = projection_idx
 
         self.LaunchConvertCommand()
 
@@ -149,7 +151,16 @@ class Arv360Convert(ArvFifo):
             self.receive_stream.OpenStream()
             self.is_running = True
 
-    def ConvertFrame(self, frame):
+    def ConvertFrame(self, input_frame_data):
+      
+        output_frame = Arv360Frame()
+        output_frame.width = self.receive_stream.width
+        output_frame.height = self.receive_stream.height
+        output_frame.bytes_per_pixel = self.receive_stream.bytes_per_pixel
+        output_frame.projection = self.convert_to_projection
+        
         self.LaunchConvertCommand()
-        self.send_stream.WriteFrame(frame)
-        return self.receive_stream.ReadFrame()
+        self.send_stream.WriteFrame(input_frame_data)
+        output_frame.data = self.receive_stream.ReadFrame()
+        
+        return output_frame
