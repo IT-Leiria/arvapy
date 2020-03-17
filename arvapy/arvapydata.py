@@ -3,6 +3,7 @@ from .arv360frame import Arv360Frame
 from .arvencode import ArvApyEncode
 from .arv360convert import Arv360Convert, ConvertProjectionNameToInt, ConvertProjectionList
 
+from .arv360streamlist import ArvApyStreamList, GetListOfAvailableStreams
 
 class ArvApyData:
     def __init__(self):
@@ -13,14 +14,14 @@ class ArvApyData:
         self.min_frame_size = 8
         
         # DEBUG PURPOSE - Only work inside the IT cluster
-        self.main_stream = Arv360StreamInput()
-        self.main_stream.name = "/datasets/Turtle_3840x1920_30.yuv"
-        #self.main_stream.name = "/nfs/home/jcarreira.it/AroundVision/API/arvapy/docker/test_material/Turtle_3840x1920_30.yuv"
-        self.main_stream.width = 3840
-        self.main_stream.height = 1920
-        self.main_stream.projection = 0
-        self.main_stream.bytes_per_pixel = 1
-        self.main_stream.OpenStream()
+        #self.main_stream = Arv360StreamInput()
+        #self.main_stream.name = "/datasets/Turtle_3840x1920_30.yuv"
+        ##self.main_stream.name = "/nfs/home/jcarreira.it/AroundVision/API/arvapy/docker/test_material/Turtle_3840x1920_30.yuv"
+        #self.main_stream.width = 3840
+        #self.main_stream.height = 1920
+        #self.main_stream.projection = 0
+        #self.main_stream.bytes_per_pixel = 1
+        #self.main_stream.OpenStream()
         
     def AdjustDimension(self, dim, direction = 0):
         if direction == 0:
@@ -32,16 +33,40 @@ class ArvApyData:
         if ret == -1:
             raise
         return int(ret)
+    
+    @staticmethod
+    def Get360DegreeStreams():
+        return GetListOfAvailableStreams()
       
     @staticmethod
     def Get360DegreeProjections():
         return ConvertProjectionList()
-      
-    
+        
     def GetAvailableConfigFiles(self):
       return self.encoding_module.GetAvailableConfigFiles()
   
+    """
+        Resets the API.
 
+        This function should be call everything that 
+        needs to be clean when reseting API.
+        For example with stream changes
+    """
+    def FlushData(self):
+      self.convert_function_module.FinishConversion()
+      
+      
+    def Select360Stream(self, idx):
+      
+      idx = int(idx)
+      if idx >= len( ArvApyStreamList ):
+        return 1
+      
+      self.FlushData()
+      self.main_stream = Arv360StreamInput( ArvApyStreamList[idx] )
+      self.main_stream.OpenStream()
+      return 0
+      
     def Get360DegreeFrame(self, projection="NA"):
 
         # Convert projection name to number
