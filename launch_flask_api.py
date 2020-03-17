@@ -12,7 +12,6 @@ app = Flask(__name__)
 # Persistent data of the ArvApy
 arvapy = ArvApyData()
 
-
 @app.route('/get_stream_list')
 def Get360StreamList():
     """
@@ -29,7 +28,6 @@ def Get360StreamList():
     """
     return json.dumps(ArvApyData.Get360DegreeStreams())
   
-  
 @app.route('/select_stream')
 def Select360Stream():
     """
@@ -45,23 +43,6 @@ def Select360Stream():
     idx = request.args.get("idx", 0)
     return str(arvapy.Select360Stream(idx))
   
-@app.route('/get_cfg_paths')
-def GetCfgFiles():
-    """
-    Returns list of configuration files
-
-    This function returns a list with the paths for
-    all configuration (*.cfg) files found in the
-    search path.
-
-    Returns
-    -------
-    list
-        list of paths to cfg files
-
-    """
-    return arvapy.GetAvailableConfigFiles()
-
 @app.route('/get_projections')
 def GetProjectionList():
     """
@@ -72,7 +53,7 @@ def GetProjectionList():
     Returns:
         json object: pair of projection initial and name
     """
-    return json.dumps(ArvApyData.Get360DegreeProjections())
+    return json.dumps(ArvApyData.display_module.Get360DegreeProjections())
 
 @app.route('/get_viewport_info')
 def GetViewportInfo():
@@ -94,7 +75,7 @@ def GetViewportInfo():
     viewport_y = request.args.get("y", 0)
     viewport_width = request.args.get("width", 90)
     viewport_height = request.args.get("height", 90)
-    viewport = arvapy.Get360DegreeViewPortFrame( viewport_x, viewport_y, viewport_width, viewport_height)
+    viewport = arvapy.display_module.Get360DegreeViewPortFrame( viewport_x, viewport_y, viewport_width, viewport_height)
     frame_info = {}
     frame_info['width'] = viewport.width
     frame_info['height'] = viewport.height
@@ -120,7 +101,7 @@ def GetViewport():
     viewport_y = request.args.get("y", 0)
     viewport_width = request.args.get("width", 90)
     viewport_height = request.args.get("height", 90)
-    viewport = arvapy.Get360DegreeViewPortFrame( viewport_x, viewport_y, viewport_width, viewport_height)
+    viewport = arvapy.display_module.Get360DegreeViewPortFrame( viewport_x, viewport_y, viewport_width, viewport_height)
     return viewport.data
 
 @app.route('/get_frame_info')
@@ -137,7 +118,7 @@ def GetFrameInfo():
         json object: width and height of the frame in a given projection
     """
     projection = request.args.get("projection", "NA")
-    frame = arvapy.Get360DegreeFrame(projection)
+    frame = arvapy.display_module.Get360DegreeFrame(projection)
     frame_info = {}
     frame_info['width'] = frame.width
     frame_info['height'] = frame.height
@@ -157,8 +138,25 @@ def GetFrame():
         byte array: new frame in raw format
     """
     projection = request.args.get("projection", "NA")
-    frame = arvapy.Get360DegreeFrame(projection)
+    frame = arvapy.display_module.Get360DegreeFrame(projection)
     return frame.data
+  
+@app.route('/get_cfg_paths')
+def GetCfgFiles():
+    """
+    Returns list of configuration files
+
+    This function returns a list with the paths for
+    all configuration (*.cfg) files found in the
+    search path.
+
+    Returns
+    -------
+    list
+        list of paths to cfg files
+
+    """
+    return arvapy.encoding_module.GetAvailableConfigFiles()
 
 
 # Start point
