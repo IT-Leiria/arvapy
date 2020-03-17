@@ -12,7 +12,6 @@ app = Flask(__name__)
 # Persistent data of the ArvApy
 arvapy = ArvApyData()
 
-
 @app.route('/get_stream_list')
 def Get360StreamList():
     """
@@ -29,7 +28,6 @@ def Get360StreamList():
     """
     return json.dumps(ArvApyData.Get360DegreeStreams())
   
-  
 @app.route('/select_stream')
 def Select360Stream():
     """
@@ -45,23 +43,6 @@ def Select360Stream():
     idx = request.args.get("idx", 0)
     return str(arvapy.Select360Stream(idx))
   
-@app.route('/get_cfg_paths')
-def GetCfgFiles():
-    """
-    Returns list of configuration files
-
-    This function returns a list with the paths for
-    all configuration (*.cfg) files found in the
-    search path.
-
-    Returns
-    -------
-    list
-        list of paths to cfg files
-
-    """
-    return arvapy.GetAvailableConfigFiles()
-
 @app.route('/get_projections')
 def GetProjectionList():
     """
@@ -72,7 +53,7 @@ def GetProjectionList():
     Returns:
         json object: pair of projection initial and name
     """
-    return json.dumps(ArvApyData.Get360DegreeProjections())
+    return json.dumps(ArvApyData.display_module.Get360DegreeProjections())
 
 @app.route('/get_viewport_info')
 def GetViewportInfo():
@@ -94,7 +75,7 @@ def GetViewportInfo():
     viewport_y = request.args.get("y", 0)
     viewport_width = request.args.get("width", 90)
     viewport_height = request.args.get("height", 90)
-    viewport = arvapy.Get360DegreeViewPortFrame( viewport_x, viewport_y, viewport_width, viewport_height)
+    viewport = arvapy.display_module.Get360DegreeViewPortFrame( viewport_x, viewport_y, viewport_width, viewport_height)
     frame_info = {}
     frame_info['width'] = viewport.width
     frame_info['height'] = viewport.height
@@ -120,7 +101,7 @@ def GetViewport():
     viewport_y = request.args.get("y", 0)
     viewport_width = request.args.get("width", 90)
     viewport_height = request.args.get("height", 90)
-    viewport = arvapy.Get360DegreeViewPortFrame( viewport_x, viewport_y, viewport_width, viewport_height)
+    viewport = arvapy.display_module.Get360DegreeViewPortFrame( viewport_x, viewport_y, viewport_width, viewport_height)
     return viewport.data
 
 @app.route('/get_frame_info')
@@ -137,7 +118,7 @@ def GetFrameInfo():
         json object: width and height of the frame in a given projection
     """
     projection = request.args.get("projection", "NA")
-    frame = arvapy.Get360DegreeFrame(projection)
+    frame = arvapy.display_module.Get360DegreeFrame(projection)
     frame_info = {}
     frame_info['width'] = frame.width
     frame_info['height'] = frame.height
@@ -157,9 +138,65 @@ def GetFrame():
         byte array: new frame in raw format
     """
     projection = request.args.get("projection", "NA")
-    frame = arvapy.Get360DegreeFrame(projection)
+    frame = arvapy.display_module.Get360DegreeFrame(projection)
     return frame.data
 
+@app.route('/get_cfg_paths')
+def GetCfgFiles():
+    """
+    Returns list of configuration files
+
+    This function returns a list with the paths for
+    all configuration (*.cfg) files found in the
+    search path.
+
+    Returns
+    -------
+    list
+        list of paths to cfg files
+
+    """
+    return arvapy.encoding_module.GetAvailableConfigFiles()
+
+@app.route('/get_qps')
+def GetQPs():
+    """
+    REST API Get list of projections
+
+    This function returns the list of usable QP values
+
+    Returns:
+        list: list with usable QPs
+    """
+    return encoder.GetQPValues()
+
+@app.route('/set_encoder_params')
+def SetEncodingParams(orig_yuv_path, rec_yuv_path, out_bin_path, cfg_files, qp):
+    """
+    REST API Get Viewport
+
+    This function sets the necessary parameters for generating a valid encoding command
+
+    Args:
+        string orig_yuv_path: path to the sequence to be encoded
+        string rec_yuv_pat: path where the reconstructed sequence after enconding is to be stored
+        string out_bin_path: path where the compressed sequence is to be stored
+        list cfg_files: list of strings containing the paths for the cofiguration files (as given by GetCfgFiles) to be used
+        list qp: list of integers, containing the QP values to be used
+    """
+    arvapy.encoding_module.SetCodingParameters(orig_yuv_path, rec_yuv_path, out_bin_path, cfg_files, qp)
+
+@app.route('/lauch_enc_proc')
+def LaunchEncodingProcess():
+    """
+    REST API Get Viewport
+
+    This function lauches the encoding precesses defined by SetEncodingParams
+
+    """
+    arvapy.encoding_module.GenEncodingCommand()
+    arvapy.encoding_module.PrintEncodigCommand()
+    arvapy.encoding_module.EncodeSequence()
 
 # Start point
 if __name__ == '__main__':

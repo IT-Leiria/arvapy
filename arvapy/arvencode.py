@@ -47,6 +47,9 @@ class ArvApyEncode:
         # Encoding commands
         self.enc_cmd       = []    # Array where all the encogind commands are saved (there should be 1 per qp)
 
+    def GetQPValues(self):
+        return [22, 27, 32, 37]
+
     def GetAvailableConfigFiles(self):
         """
         Returns list of configuration files
