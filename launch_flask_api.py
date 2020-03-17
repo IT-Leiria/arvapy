@@ -12,6 +12,39 @@ app = Flask(__name__)
 # Persistent data of the ArvApy
 arvapy = ArvApyData()
 
+
+@app.route('/get_stream_list')
+def Get360StreamList():
+    """
+    Returns list of available 360-degree streams
+
+    This function returns a list of arrays with the following information:
+    [name, width, height, bytes per pixel]
+
+    Returns
+    -------
+    list
+        list of arrays with the information above
+
+    """
+    return json.dumps(ArvApyData.Get360DegreeStreams())
+  
+  
+@app.route('/select_stream')
+def Select360Stream():
+    """
+    This function selects the desired 360-degree stream.
+
+    Args:
+        idx (integer): index of the video stream in the array 
+                     returned by Get360StreamList
+
+    Returns:
+        int: 0 if succeeded (higher than 0 otherwise)
+    """
+    idx = request.args.get("idx", 0)
+    return str(arvapy.Select360Stream(idx))
+  
 @app.route('/get_cfg_paths')
 def GetCfgFiles():
     """
@@ -44,9 +77,9 @@ def GetProjectionList():
 @app.route('/get_viewport_info')
 def GetViewportInfo():
     """
-    REST API Get Viewport
+    REST API Get Viewport Info
 
-    This function returns a viewport of the current frame
+    This function returns the information regaring a viewport
 
     Args:
         x (integer): viewport horizontal center position in degrees
@@ -93,9 +126,9 @@ def GetViewport():
 @app.route('/get_frame_info')
 def GetFrameInfo():
     """
-    REST API Get Frame
+    REST API Get Frame Info
 
-    This function returns a new frame on every call
+    This function returns the information regarding a frame
 
     Args:
         projection (string): initials of the planar projection format of the output
