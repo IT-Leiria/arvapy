@@ -137,7 +137,7 @@ def GetViewport():
     return viewport.formatedData()
 
 @app.route('/get_viewport_pixel_coordinates')
-def GetViewport():
+def GetViewportPelCoordinates():
     """
     REST API Get Viewport
 
