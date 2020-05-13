@@ -9,13 +9,19 @@ ArvApyStreamList[0].width = 3840
 ArvApyStreamList[0].height = 1920
 ArvApyStreamList[0].projection = 0
 ArvApyStreamList[0].bytes_per_pixel = 1
+ArvApyStreamList[0].num_layers = 1
 
-
+ArvApyStreamList[0].name = "/datasets/SkateboardTrick_le_8192x4096.yuv"
+ArvApyStreamList[0].width = 8192
+ArvApyStreamList[0].height = 4096
+ArvApyStreamList[0].projection = 0
+ArvApyStreamList[0].bytes_per_pixel = 1
+ArvApyStreamList[0].num_layers = 1
 
 
 def GetListOfAvailableStreams():
     stream_list = []
     for s in ArvApyStreamList:
-        stream = [ s.name, s.width, s.height, s.bytes_per_pixel]
+        stream = [ s.name, s.width, s.height, s.bytes_per_pixel, s.num_layers]
         stream_list.append( stream )
     return stream_list

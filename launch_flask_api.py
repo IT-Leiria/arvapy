@@ -18,12 +18,13 @@ def Get360StreamList():
     Returns list of available 360-degree streams
 
     This function returns a list of arrays with the following information:
-    [name, width, height, bytes per pixel]
+    [name, width, height, bytes per pixel, number of layers]
 
     Returns
     -------
     list
-        list of arrays with the information above
+        list of arrays with the following information:
+          [name, width, height, bytes per pixel, number of layers]
 
     """
     return json.dumps(ArvApyData.Get360DegreeStreams())

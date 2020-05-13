@@ -9,19 +9,7 @@ class ArvApyData:
     def __init__(self):
         self.display_module = ArvApyDisplay()
         self.encoding_module = ArvApyEncode('/src/vtm/bin/EncoderAppStatic')
-        
         self.main_stream = None
-        
-        # DEBUG PURPOSE - Only work inside the IT cluster
-        #self.main_stream = Arv360StreamInput()
-        #self.main_stream.name = "/datasets/Turtle_3840x1920_30.yuv"
-        ##self.main_stream.name = "/nfs/home/jcarreira.it/AroundVision/API/arvapy/docker/test_material/Turtle_3840x1920_30.yuv"
-        #self.main_stream.width = 3840
-        #self.main_stream.height = 1920
-        #self.main_stream.projection = 0
-        #self.main_stream.bytes_per_pixel = 1
-        #self.main_stream.OpenStream()
-        
     
     @staticmethod
     def Get360DegreeStreams():
