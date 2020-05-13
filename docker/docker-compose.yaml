@@ -1,12 +1,14 @@
-version: '3'
+version: "3"
 services:
-  api:
+  arvapyapi:
     image: arvapy
-    ports:
-      - "5000:5000"
-    volumes:
-      - ..:/src/arvapy
-    tmpfs:
-      - /tmp
     environment:
       FLASK_ENV: development
+    volumes:
+      - ./data/datasets:/datasets # video source files
+      - ..:/src/arvapy            # API code
+    ports:
+      - 5000:5000  # API exposed in port 5000
+    tmpfs:
+      - /tmp
+    
