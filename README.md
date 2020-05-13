@@ -10,6 +10,6 @@ To build the docker image download the folder from:
 
 and put it inside the docker folder along with the Dockerfile.
 
-Then simply run: 
+Then run inside the docker folder: 
 
-`docker build .`
+`docker build . -t arvapy`
