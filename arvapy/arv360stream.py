@@ -7,6 +7,7 @@ class Arv360Stream:
         self.frame_rate = -1
         self.projection = 0
         self.bytes_per_pixel = 1
+        self.num_layers = 1
 
         if other is not None:
             self.name = other.name
@@ -15,6 +16,7 @@ class Arv360Stream:
             self.frame_rate = other.frame_rate
             self.projection = other.projection
             self.bytes_per_pixel = other.bytes_per_pixel
+            self.num_layers = other.num_layers
 
     def CloseStream(self):
         self.binary_file.close()
@@ -24,6 +26,7 @@ class Arv360Stream:
         print("       Width:  " + str(self.width))
         print("       Height: " + str(self.height))
         print("       Bpp:    " + str(self.bytes_per_pixel))
+        print("       Layers: " + str(self.num_layers))
 
 
 class Arv360StreamInput(Arv360Stream):

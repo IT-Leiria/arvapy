@@ -26,7 +26,7 @@ class ArvApyDisplay:
     def Get360DegreeProjections():
         return ConvertProjectionList()
     
-    def Get360DegreeFrame(self, projection="NA"):
+    def Get360DegreeFrame(self, projection="NA", layer=-1):
 
         # Convert projection name to number
         
@@ -51,18 +51,29 @@ class ArvApyDisplay:
 
         # Return converted frame
         return self.convert_function_module.ConvertFrame(input_frame.data)
+
+    def Get360DegreeViewPortFrameFromCoordinates(self, x, y, normalised_width, normalised_height, layer ):
+
+        # TODO: Fix conversion from x,y to angular coordinates
+        angular_width = normalised_width * 360
+        angular_height = normalised_height * 180
+
+        angular_x = x + normalised_width/2
+        angular_y = y + normalised_height/2
+
+        return self.Get360DegreeViewPortFrame( angular_x, angular_y, angular_width, angular_height, layer )
       
-    def Get360DegreeViewPortFrame(self, x, y, width, height ):
+    def Get360DegreeViewPortFrame(self, x, y, angular_width, angular_height, layer ):
 
         viewport_center_x = int( x )
         viewport_center_y = int( y )
-        width = int( width )
-        height = int( height )
+        angular_width = int( angular_width )
+        angular_height = int( angular_height )
         
-        viewport_width = self.AdjustDimension( self.input_stream.width * width /  360 )
-        viewport_height = self.AdjustDimension( self.input_stream.height * height / 180 )
+        viewport_width = self.AdjustDimension( self.input_stream.width * angular_width /  360 )
+        viewport_height = self.AdjustDimension( self.input_stream.height * angular_height / 180 )
         
-        viewport_settings = str(width) + " " + str(width) + " " + str(viewport_center_x) + " " +  str(viewport_center_y)
+        viewport_settings = str(angular_width) + " " + str(angular_height) + " " + str(viewport_center_x) + " " +  str(viewport_center_y)
         
         # Rectilinear projection index
         projection = ConvertProjectionNameToInt("RECT")
@@ -88,5 +99,4 @@ class ArvApyDisplay:
 
         # Return converted frame
         converted_frame = self.convert_function_module.ConvertFrame(input_frame.data)
-        
         return converted_frame

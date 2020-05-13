@@ -13,4 +13,17 @@ class Arv360Frame:
             self.projection = other.projection
             self.bytes_per_pixel = other.bytes_per_pixel
 
+    def rawData(self):
+        array = bytearray()
+        array.extend( self.data )
+        return array
+
+    def formatedData(self):
+        array = bytearray()
+        header = str(self.width) + 'x' + str(self.height) + '\n' + str(self.bytes_per_pixel) + '\n'
+        array.extend(map(ord, header))
+        array.extend( self.data )
+        return array
+
+
 
