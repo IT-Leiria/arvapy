@@ -31,7 +31,7 @@ Default360ConvertConfig = """InputGeometryType             : 0
 Config360ConvertProjection = [
     ["ERP",  "Equi-rectangular projection", 0, "1 1   0 0"],
     ["CMP",  "Cube-map projection",         1, "2 3   4 0 0 0 5 0   3 180 1 270 2 0"],
-    ["COHP", "Compact OHP",                 3, "4 2   2 270  3 90  6 90  7 270  0 270  1 90  4 90  5 270"],
+    #["COHP", "Compact OHP",                 3, "4 2   2 270  3 90  6 90  7 270  0 270  1 90  4 90  5 270"],
     ["RECT", "Rectilinear projection",      4, "1 1   0 0"],
     ["CISP", "Compat ISP",                  5, "4 5   0 180 2 180 4 0 6 180 8 0   1 180 3 180 5 180 7 180 9 180    11 0 13 0 15 0 17 0 19 0   10 180 12 0 14 180 16 0 18 0"]
 ]
@@ -40,7 +40,9 @@ Config360ConvertProjection = [
 def ConvertProjectionList():
     available_projections = []
     for i in range( len(Config360ConvertProjection) ):
-        available_projections.append((Config360ConvertProjection[i][1], Config360ConvertProjection[i][2]))
+        if Config360ConvertProjection[i][2] == 4:
+            continue
+        available_projections.append((Config360ConvertProjection[i][0], Config360ConvertProjection[i][1]))
     return available_projections
 
 
