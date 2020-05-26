@@ -72,7 +72,7 @@ class Arv360Convert(ArvFifo):
 
         if projection_idx == -1 or projection_idx >= len( Config360ConvertProjection ):
             # Invalid projection
-            return False
+            raise "Invalid projection"
 
         projection_config_type = Config360ConvertProjection[projection_idx][2]
         projection_config_fps = Config360ConvertProjection[projection_idx][3]
@@ -108,8 +108,11 @@ class Arv360Convert(ArvFifo):
         if line_found != -1:
             output_file = line_found.split(":")[1].strip()
             if not os.path.exists(output_file):
-                # Problems here
+                raise "Could not find the output file in the conversion module"
                 found = True
+        else:
+            raise "Could not find the output file in the conversion module"
+
         os.remove(output_file)
 
         # Guess packed resolution
@@ -143,6 +146,8 @@ class Arv360Convert(ArvFifo):
         if self.is_running:
             self.receive_stream.CloseStream()
             self.send_stream.CloseStream()
+
+        self.convert_to_projection = -1
 
     def LaunchConvertCommand(self):
         if not self.is_running:
