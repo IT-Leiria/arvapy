@@ -1,6 +1,6 @@
 from .arv360stream import Arv360Stream
 
-NumberOfStreams = 1
+NumberOfStreams = 2
 
 ArvApyStreamList = [ Arv360Stream() for i in range(NumberOfStreams)]
 
@@ -11,12 +11,12 @@ ArvApyStreamList[0].projection = 0
 ArvApyStreamList[0].bytes_per_pixel = 1
 ArvApyStreamList[0].num_layers = 1
 
-ArvApyStreamList[0].name = "/datasets/SkateboardTrick_le_8192x4096.yuv"
-ArvApyStreamList[0].width = 8192
-ArvApyStreamList[0].height = 4096
-ArvApyStreamList[0].projection = 0
-ArvApyStreamList[0].bytes_per_pixel = 1
-ArvApyStreamList[0].num_layers = 1
+ArvApyStreamList[1].name = "/datasets/SkateboardTrick_le_8192x4096.yuv"
+ArvApyStreamList[1].width = 8192
+ArvApyStreamList[1].height = 4096
+ArvApyStreamList[1].projection = 0
+ArvApyStreamList[1].bytes_per_pixel = 1
+ArvApyStreamList[1].num_layers = 1
 
 
 def GetListOfAvailableStreams():
