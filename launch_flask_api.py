@@ -44,7 +44,7 @@ def Select360Stream():
     idx = request.args.get("idx", 0)
     return str(arvapy.Select360Stream(idx))
   
-@app.route('/get_projections')
+@app.route('/get_projection_list')
 def GetProjectionList():
     """
     REST API Get list of projections
@@ -54,119 +54,7 @@ def GetProjectionList():
     Returns:
         json object: pair of projection initial and name
     """
-    return json.dumps(ArvApyData.display_module.Get360DegreeProjections())
-
-@app.route('/get_viewport_info')
-def GetViewportInfo():
-    """
-    REST API Get Viewport Info
-
-    This function returns the information regaring a viewport
-
-    Args:
-        x (integer): viewport horizontal center position in degrees
-        y (integer): viewport vertical center position in degrees
-        width (integer): width of the viewport in degree
-        height (integer): height of the viewport in degrees
-
-    Returns:
-        json object: width and height of the viewport
-    """
-    viewport_x = request.args.get("x", 0)
-    viewport_y = request.args.get("y", 0)
-    viewport_width = request.args.get("width", 90)
-    viewport_height = request.args.get("height", 90)
-    viewport = arvapy.display_module.Get360DegreeViewPortFrame( viewport_x, viewport_y, viewport_width, viewport_height)
-    frame_info = {}
-    frame_info['width'] = viewport.width
-    frame_info['height'] = viewport.height
-    return json.dumps(frame_info)
-  
-@app.route('/get_viewport_raw')
-def GetViewportRaw():
-    """
-    REST API Get Viewport Raw
-
-    This function returns a viewport of the current frame
-
-    Args:
-        x (integer): viewport horizontal center position in degrees
-        y (integer): viewport vertical center position in degrees
-        width (integer): width of the viewport in degree
-        height (integer): height of the viewport in degrees
-
-    Returns:
-        byte array: generated viewport
-    """
-    viewport_x = request.args.get("x", 0)
-    viewport_y = request.args.get("y", 0)
-    viewport_width = request.args.get("width", 90)
-    viewport_height = request.args.get("height", 90)
-    viewport = arvapy.display_module.Get360DegreeViewPortFrame( viewport_x, viewport_y, viewport_width, viewport_height)
-    return viewport.rawData()
-
-@app.route('/get_viewport')
-def GetViewport():
-    """
-    REST API Get Viewport
-
-    This function returns a new frame with the desired viewport on every call
-    At the beginning of the byte stream a sequence of ASCII chars are sent:
-      [width]x[height]\n
-      [bytes per pixel (Bpp)]\n
-      ( width * height * Bpp ) pixels bytes
-
-
-    Args:
-        x (integer): viewport horizontal center position in degrees
-        y (integer): viewport vertical center position in degrees
-        width (integer): width of the viewport in degree
-        height (integer): height of the viewport in degrees
-
-        layer (integer): layer to return (default means highest layer)
-
-    Returns:
-        header + byte array: generated viewport
-    """
-    viewport_x = request.args.get("x", 0)
-    viewport_y = request.args.get("y", 0)
-    viewport_width = request.args.get("width", 90)
-    viewport_height = request.args.get("height", 90)
-    layer = request.args.get("layer", "-1")
-    viewport = arvapy.display_module.Get360DegreeViewPortFrame( viewport_x, viewport_y, viewport_width, viewport_height , layer=layer)
-    return viewport.formatedData()
-
-@app.route('/get_viewport_pixel_coordinates')
-def GetViewportPelCoordinates():
-    """
-    REST API Get Viewport
-
-    This function returns a new frame with the desired viewport on every call
-    At the beginning of the byte stream a sequence of ASCII chars are sent:
-      [width]x[height]\n
-      [bytes per pixel (Bpp)]\n
-      ( width * height * Bpp ) pixels bytes
-
-    Args:
-        x (float): viewport top-left x position in normalized pixels [0-1]
-                   normalisation -> x = x_pixel / width
-        y (float): viewport top-left y position in normalized pixels [0-1]
-        width (float): width of the viewport in normalized pixels [0-1]
-        height (float): height of the viewport in normalized pixels [0-1]
-
-        layer (integer): layer to return (default means highest layer)
-
-    Returns:
-        header + byte array: generated viewport
-    """
-    viewport_x = request.args.get("x", 0.25)
-    viewport_y = request.args.get("y", 0.25)
-    viewport_width = request.args.get("width", 0.5)
-    viewport_height = request.args.get("height", 0.5)
-    layer = request.args.get("layer", "-1")
-    #TODO: implement this fuction call
-    viewport = arvapy.display_module.Get360DegreeViewPortFrameFromCoordinates( viewport_x, viewport_y, viewport_width, viewport_height , layer=layer)
-    return viewport.formatedData()
+    return json.dumps(arvapy.display_module.Get360DegreeProjections())
 
 @app.route('/get_frame_info')
 def GetFrameInfo():
@@ -180,14 +68,16 @@ def GetFrameInfo():
         layer (integer): layer to return (default means highest layer)
 
     Returns:
-        json object: width and height of the frame in a given projection
+        json object: width, height and bytes/pixel of the frame in a given projection
     """
     p = request.args.get("projection", "NA")
     l = request.args.get("layer", "-1")
-    frame = arvapy.display_module.Get360DegreeFrame(projection=p, layer=l)
+    frame = arvapy.display_module.Get360DegreeFrameInfo(projection=p, layer=l)
     frame_info = {}
     frame_info['width'] = frame.width
     frame_info['height'] = frame.height
+    frame_info['Bpp'] = frame.bytes_per_pixel
+    frame_info['byte_length'] = len( frame.rawData() )
     return json.dumps(frame_info)
   
 @app.route('/get_frame_raw')
@@ -233,6 +123,99 @@ def GetFrame():
     l = request.args.get("layer", "-1")
     frame = arvapy.display_module.Get360DegreeFrame(projection=p, layer=l)
     return frame.formatedData()
+
+
+@app.route('/get_viewport_info')
+def GetViewportInfo():
+    """
+    REST API Get Viewport Info
+
+    This function returns the information regaring a viewport
+
+    Args:
+        coord (str): coordinate system (pixel, polar)
+        x (integer): viewport horizontal center position in degrees
+        y (integer): viewport vertical center position in degrees
+        width (integer): width of the viewport in degree
+        height (integer): height of the viewport in degrees
+        layer (integer): layer to return (default means highest layer)
+
+    Returns:
+        json object: width and height of the viewport
+    """
+    coordinates = request.args.get("coord", "pixel")
+    viewport_x = request.args.get("x", 0)
+    viewport_y = request.args.get("y", 0)
+    viewport_width = request.args.get("width", 90)
+    viewport_height = request.args.get("height", 90)
+    layer = request.args.get("layer", -1)
+    viewport = arvapy.display_module.Get360DegreeViewportInfo(coordinates, viewport_x, viewport_y, viewport_width, viewport_height, layer)
+    viewport_info = {}
+    viewport_info['width'] = viewport.width
+    viewport_info['height'] = viewport.height
+    viewport_info['Bpp'] = viewport.bytes_per_pixel
+    viewport_info['byte_length'] = len( viewport.rawData() )
+    return json.dumps(viewport_info)
+  
+@app.route('/get_viewport_raw')
+def GetViewportRaw():
+    """
+    REST API Get Viewport Raw
+
+    This function returns a viewport of the current frame
+
+    Args:
+        coord (str): coordinate system (pixel, polar)
+        x (integer): viewport horizontal center position in degrees
+        y (integer): viewport vertical center position in degrees
+        width (integer): width of the viewport in degree
+        height (integer): height of the viewport in degrees
+        layer (integer): layer to return (default means highest layer)
+
+    Returns:
+        byte array: generated viewport
+    """
+    coordinates = request.args.get("coord", "pixel")
+    viewport_x = request.args.get("x", 0)
+    viewport_y = request.args.get("y", 0)
+    viewport_width = request.args.get("width", 90)
+    viewport_height = request.args.get("height", 90)
+    layer = request.args.get("layer", -1)
+    viewport = arvapy.display_module.Get360DegreeViewport(coordinates, viewport_x, viewport_y, viewport_width, viewport_height, layer)
+    return viewport.rawData()
+
+@app.route('/get_viewport')
+def GetViewport():
+    """
+    REST API Get Viewport
+
+    This function returns a new frame with the desired viewport on every call
+    At the beginning of the byte stream a sequence of ASCII chars are sent:
+      [width]x[height]\n
+      [bytes per pixel (Bpp)]\n
+      ( width * height * Bpp ) pixels bytes
+
+
+    Args:
+        coord (str): coordinate system (pixel, polar)
+        x (integer): viewport horizontal center position in degrees
+        y (integer): viewport vertical center position in degrees
+        width (integer): width of the viewport in degree
+        height (integer): height of the viewport in degrees
+        layer (integer): layer to return (default means highest layer)
+
+    Returns:
+        header + byte array: generated viewport
+    """
+    coordinates = request.args.get("coord", "pixel")
+    viewport_x = request.args.get("x", 0)
+    viewport_y = request.args.get("y", 0)
+    viewport_width = request.args.get("width", 90)
+    viewport_height = request.args.get("height", 90)
+    layer = request.args.get("layer", -1)
+    viewport = arvapy.display_module.Get360DegreeViewport(coordinates, viewport_x, viewport_y, viewport_width, viewport_height, layer)
+    return viewport.formatedData()
+
 
 @app.route('/get_cfg_paths')
 def GetCfgFiles():
