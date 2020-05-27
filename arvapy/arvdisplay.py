@@ -104,8 +104,8 @@ class ArvApyDisplay:
 
         if coord_type == "pixel":
             # TODO: Fix conversion from x,y to angular coordinates
-            viewport_center_x = x - self.input_stream.width / 2
-            viewport_center_y = y - self.input_stream.height / 2
+            viewport_center_x = ( x - self.input_stream.width / 2 ) / self.input_stream.width * 2 * 180
+            viewport_center_y = ( y - self.input_stream.height / 2 ) / self.input_stream.height * 2 * 90
             angular_width = int( width / self.input_stream.width * 360 )
             angular_height = int( height / self.input_stream.height * 180 )
         elif coord_type == "polar":
