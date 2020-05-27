@@ -166,10 +166,10 @@ def GetViewportRaw():
 
     Args:
         coord (str): coordinate system (pixel, polar)
-        x (integer): viewport horizontal center position in degrees
-        y (integer): viewport vertical center position in degrees
-        width (integer): width of the viewport in degree
-        height (integer): height of the viewport in degrees
+        x (integer): viewport horizontal center position (pixel or degree)
+        y (integer): viewport vertical center position (pixel or degree)
+        width (integer): width of the viewport (pixel or degree)
+        height (integer): height of the viewport (pixel or degree)
         layer (integer): layer to return (default means highest layer)
 
     Returns:
