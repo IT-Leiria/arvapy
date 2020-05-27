@@ -102,10 +102,12 @@ def get_viewport(x, y, w, h):
     r_content = requests.get(url_base_path + "get_viewport_raw?" + viewport_api_args, stream=True).content
     display_frame_raw(r_content,shape)
 
-print("5.1 Get center viewport (approximately)")
-get_viewport( 1920-500/2, 960, 500, 500 )
-get_viewport( 1920-500/2, 960, 500, 500 )
-get_viewport( 1920-500/2, 960, 500, 500 )
+print("5.1 Get viewport")
+get_viewport( 2347, 792, 469, 429 )
+
+#get_viewport( 1920-500/2, 960, 500, 500 )
+#get_viewport( 1920-500/2, 960, 500, 500 )
+#get_viewport( 1920-500/2, 960, 500, 500 )
 
 
 # # Test get_stream_list
