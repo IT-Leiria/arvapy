@@ -5,11 +5,14 @@ from .arv360convert import Arv360Convert, ConvertProjectionNameToInt, ConvertPro
 class ArvApyDisplay:
     def __init__(self):
         self.convert_function_module = Arv360Convert()
+        self.viewport_function_module = Arv360Convert()
         self.input_stream = []
         self.min_frame_size = 8
 
         self.has_buffered_frame = False
         self.buffered_frame = []
+
+        self.last_read_frame = []
       
     def SetStream(self, stream):
         self.input_stream = stream
@@ -32,7 +35,7 @@ class ArvApyDisplay:
     def Get360DegreeFrameInfo(self, projection="NA", layer=-1):
         """
         This functions get a new frame in order to extract the information
-        but buffers it untill next call of Get360DegreeFrame
+        but buffers it until next call of Get360DegreeFrame
         """
         if self.has_buffered_frame:
             if self.buffered_frame.projection == ConvertProjectionNameToInt(projection):
@@ -61,6 +64,8 @@ class ArvApyDisplay:
         input_frame.bytes_per_pixel = self.input_stream.bytes_per_pixel
         input_frame.projection = self.input_stream.projection
         input_frame.data = self.input_stream.ReadFrame()
+
+        self.last_read_frame = input_frame
 
         # Check if projection conversion is needed
         if projection == -1 or projection == self.input_stream.projection:
@@ -105,7 +110,7 @@ class ArvApyDisplay:
         if coord_type == "pixel":
             # TODO: Fix conversion from x,y to angular coordinates
             viewport_center_x = ( x - self.input_stream.width / 2 ) / self.input_stream.width * 2 * 180
-            viewport_center_y = ( y - self.input_stream.height / 2 ) / self.input_stream.height * 2 * 90
+            viewport_center_y = (  self.input_stream.height / 2 - y ) / self.input_stream.height * 2 * 90
             angular_width = int( width / self.input_stream.width * 360 )
             angular_height = int( height / self.input_stream.height * 180 )
         elif coord_type == "polar":
@@ -126,19 +131,22 @@ class ArvApyDisplay:
         projection = ConvertProjectionNameToInt("RECT")
 
         # Get frame from original stream
-        input_frame = Arv360Frame()
-        input_frame.width = self.input_stream.width
-        input_frame.height = self.input_stream.height
-        input_frame.bytes_per_pixel = self.input_stream.bytes_per_pixel
-        input_frame.projection = self.input_stream.projection
-        input_frame.data = self.input_stream.ReadFrame()
+        # input_frame = Arv360Frame()
+        # input_frame.width = self.input_stream.width
+        # input_frame.height = self.input_stream.height
+        # input_frame.bytes_per_pixel = self.input_stream.bytes_per_pixel
+        # input_frame.projection = self.input_stream.projection
+        # input_frame.data = self.input_stream.ReadFrame()
+        
+        input_frame = self.last_read_frame
+        new_hash = hash( "aw"+str(angular_width)+"ah"+str(angular_height)+"vx"+str(viewport_center_x)+"vy"+str(viewport_center_y))
 
-    
         # Configure conversion function
-        if self.convert_function_module.convert_to_projection != projection:
-            self.convert_function_module.FinishConversion()
-            self.convert_function_module.InitConversion(self.input_stream, projection, viewport_width, viewport_height, viewport_settings)
+        if self.viewport_function_module.convertion_hash != new_hash:
+            self.viewport_function_module.FinishConversion()
+            self.viewport_function_module.InitConversion(self.input_stream, projection, viewport_width, viewport_height, viewport_settings)
+            self.viewport_function_module.convertion_hash = new_hash
 
         # Return converted frame
-        converted_frame = self.convert_function_module.ConvertFrame(input_frame.data)
+        converted_frame = self.viewport_function_module.ConvertFrame(input_frame.data)
         return converted_frame

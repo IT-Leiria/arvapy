@@ -65,6 +65,7 @@ class Arv360Convert(ArvFifo):
         self.convert_config_fname = ""
         self.send_stream = None
         self.receive_stream = None
+        self.convertion_hash = 0
 
     def InitConversion(self, input_video, projection_idx, width = 0, height = 0, viewport_settings = [] ):
 
