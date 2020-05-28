@@ -72,15 +72,15 @@ def get_frame(proj):
 
 print("4.1 Get projections (get_projections) - ERP")
 get_frame("ERP")
-get_frame("ERP")
+# get_frame("ERP")
 
 print("4.2 Get projections (get_projections) - CMP")
-get_frame("CMP")
-get_frame("CMP")
+# get_frame("CMP")
+# get_frame("CMP")
 
 print("4.3 Get projections (get_projections) - CISP")
-get_frame("CISP")
-get_frame("CISP")
+# get_frame("CISP")
+# get_frame("CISP")
 
 
 
@@ -103,11 +103,11 @@ def get_viewport(x, y, w, h):
     display_frame_raw(r_content,shape)
 
 print("5.1 Get viewport")
-get_viewport( 2347, 792, 469, 429 )
+# get_viewport( 2347, 792, 469, 429 )
 
-#get_viewport( 1920-500/2, 960, 500, 500 )
-#get_viewport( 1920-500/2, 960, 500, 500 )
-#get_viewport( 1920-500/2, 960, 500, 500 )
+get_viewport( 1920-500/2, 960, 500, 500 )
+get_frame("ERP")
+get_viewport( 1920-500/2, 960, 500, 500 )
 
 
 # # Test get_stream_list
