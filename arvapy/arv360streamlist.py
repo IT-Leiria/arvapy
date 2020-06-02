@@ -1,6 +1,6 @@
 from .arv360stream import Arv360Stream
 
-NumberOfStreams = 2
+NumberOfStreams = 3
 
 ArvApyStreamList = [ Arv360Stream() for i in range(NumberOfStreams)]
 
@@ -17,6 +17,14 @@ ArvApyStreamList[1].height = 4096
 ArvApyStreamList[1].projection = 0
 ArvApyStreamList[1].bytes_per_pixel = 1
 ArvApyStreamList[1].num_layers = 1
+
+ArvApyStreamList[2].name = "/datasets/Foreman_CIF.yuv"
+ArvApyStreamList[2].width = 352
+ArvApyStreamList[2].height = 288
+ArvApyStreamList[2].projection = 0
+ArvApyStreamList[2].bytes_per_pixel = 1
+ArvApyStreamList[2].num_layers = 1
+
 
 
 def GetListOfAvailableStreams():

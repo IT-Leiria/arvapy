@@ -19,6 +19,8 @@ r = requests.get(url_base_path + "get_stream_list")
 for i, s in enumerate(literal_eval(r.content.decode())):
     print({"name": s[0], "width": s[1], "height": s[2], "bytes_per_pixel": s[3], "number_of_layers": s[4]})
 
+exit 
+ 
 # 1.2 Select stream
 print("1.2 Select stream")
 r = requests.get(url_base_path + "select_stream?idx=0")  # post?
@@ -72,15 +74,15 @@ def get_frame(proj):
 
 print("4.1 Get projections (get_projections) - ERP")
 get_frame("ERP")
-# get_frame("ERP")
+get_frame("ERP")
 
 print("4.2 Get projections (get_projections) - CMP")
-# get_frame("CMP")
-# get_frame("CMP")
+get_frame("CMP")
+get_frame("CMP")
 
 print("4.3 Get projections (get_projections) - CISP")
-# get_frame("CISP")
-# get_frame("CISP")
+get_frame("CISP")
+get_frame("CISP")
 
 
 
@@ -103,11 +105,11 @@ def get_viewport(x, y, w, h):
     display_frame_raw(r_content,shape)
 
 print("5.1 Get viewport")
-# get_viewport( 2347, 792, 469, 429 )
+get_viewport( 2347, 792, 469, 429 )
 
-get_viewport( 1920-500/2, 960, 500, 500 )
-get_frame("ERP")
-get_viewport( 1920-500/2, 960, 500, 500 )
+#get_viewport( 1920-500/2, 960, 500, 500 )
+#get_viewport( 1920-500/2, 960, 500, 500 )
+#get_viewport( 1920-500/2, 960, 500, 500 )
 
 
 # # Test get_stream_list
