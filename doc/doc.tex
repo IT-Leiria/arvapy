@@ -39,9 +39,9 @@
     \label{fig:scheme}
 \end{figure}
 
-This section describes the high-level graphical user interface (GUI) which will allow to control the tools and algorithms developed in the ARoundVision project. \cref{fig:scheme} shows the overall diagram of this project. Mainly it can be divided into a transmitter ($T_x$) and a receiver ($R_x$). While the former is responsible for acquisition, pre-processing and data encoding, the latter is responsible for decoding, post-processing and display. 
+This section describes the high-level graphical user interface (GUI) which will allow to control the tools and algorithms developed in the ARoundVision project. \cref{fig:scheme} shows the overall diagram of this project. Mainly it can be divided into a transmitter ($T_x$) and a receiver ($R_x$). While the former is responsible for acquisition, pre-processing and data encoding, the latter is responsible for decoding, post-processing and display.
 
-Our proposal is for a GUI to include both the $T_x$ and $R_x$ functions which can be split into different modules. The overall look of the GUI is depicted in \cref{fig:overall_gui}. The GUI is divided into two parts: Module selection and module interface. Each module is characterised by a different graphical interface which is drawn on the right and can include one or more functions. Each module is independent from each other, reducing the code complexity and allowing for extension in the future. 
+Our proposal is for a GUI to include both the $T_x$ and $R_x$ functions which can be split into different modules. The overall look of the GUI is depicted in \cref{fig:overall_gui}. The GUI is divided into two parts: Module selection and module interface. Each module is characterised by a different graphical interface which is drawn on the right and can include one or more functions. Each module is independent from each other, reducing the code complexity and allowing for extension in the future.
 
 \begin{figure}[ht]
     \centering
@@ -50,12 +50,12 @@ Our proposal is for a GUI to include both the $T_x$ and $R_x$ functions which ca
     \label{fig:overall_gui}
 \end{figure}
 
-On the left the user is able to select the input source, which can either be an uncompressed video source or a compressed one, and next to the input selection, the video information is shown (resolution, frame rate, projection format, etc). Then, after a separator, a button for each module is shown allowing the user to select the desired module. Below the list of modules is described. 
+On the left the user is able to select the input source, which can either be an uncompressed video source or a compressed one, and next to the input selection, the video information is shown (resolution, frame rate, projection format, etc). Then, after a separator, a button for each module is shown allowing the user to select the desired module. Below the list of modules is described.
 
 In order to select the input source, the created API returns a list of available sources, using the \mintinline{python}{Get360StreamList} function. Based on this the user can select an input using the \mintinline{python}{Select360Stream}. From this point on, all operation are applying to the selected stream.
- 
-% In order to select the input source, one can use a text-based file as shown in \cref{fig:results_module} with the information required, removing the need for extra dialog boxes to input extra information. 
-% This would be a generic format which can work for both raw/uncompressed and compressed video. 
+
+% In order to select the input source, one can use a text-based file as shown in \cref{fig:results_module} with the information required, removing the need for extra dialog boxes to input extra information.
+% This would be a generic format which can work for both raw/uncompressed and compressed video.
 % While the former is meant for the $T_x$ modules, the latter is meant for the $R_x$ modules.
 
 % \begin{figure}[htbp]
@@ -77,7 +77,7 @@ In order to select the input source, the created API returns a list of available
 %   type: mkv
 %   filename: input.mkv
 %   ...
-  
+
 % # Compressed source
 % - bitstream:
 %   type: vvc_stream
@@ -96,23 +96,23 @@ This section describes the modules that theoretically belong to the transmitter 
 \subsection{Display and adaptation}
 
 This module is used to display the input 360$^\circ$ video, either from an uncompressed stream or from a capturing device.
-The following functionality should be supported, according to \cref{fig:display_module}: 
+The following functionality should be supported, according to \cref{fig:display_module}:
 
 \begin{enumerate}
     \item Widget with support for zoom and pan operation, as well as, point and area selection. Use Use \mintinline{python}{GetFrame} to obtain a frame to display.
-    
-    \item  After selecting a fixed region-of-interest (ROI) in the widget with the 360-degree video, export to a file: 
+
+    \item  After selecting a fixed region-of-interest (ROI) in the widget with the 360-degree video, export to a file:
     \begin{enumerate}
         %\item Input source - this includes all information of source (see \cref{cod:yml_enc_example});
         \item Position;
-        \item Size; 
+        \item Size;
         %\item Frame number.
     \end{enumerate}
-    
+
     \item Select between fixed and dynamic ROI (dynamic ROI implements object tracking, using existing tools). Use \mintinline{python}{GetFrame} with the desired projection.
-    
+
     \item Open a window to select the destination projection and call the projection conversion function.
-    
+
     \item Call the viewport rendering function with the selected ROI as input. Use \mintinline{python}{GetViewport} with the center and viewport dimensions obtained based on the selected ROI.
 
 \end{enumerate}
@@ -125,7 +125,7 @@ The following functionality should be supported, according to \cref{fig:display_
 \end{figure}
 
 
-% The first block detects object from an input 360-degree video signal. Each object is represented by a different region-of-interest highlighted in the video signal. Alternatively, they can be represented as different file formats. 
+% The first block detects object from an input 360-degree video signal. Each object is represented by a different region-of-interest highlighted in the video signal. Alternatively, they can be represented as different file formats.
 
 % % \begin{figure}[htbp]
 % %     \centering
@@ -134,7 +134,7 @@ The following functionality should be supported, according to \cref{fig:display_
 % %     \label{fig:3}
 % % \end{figure}
 
-% The second step is to identify the detected objects. This block can receive a single output of the block represented in \cref{fig:scheme} and retrieve information regarding the object as metadata. 
+% The second step is to identify the detected objects. This block can receive a single output of the block represented in \cref{fig:scheme} and retrieve information regarding the object as metadata.
 
 % % \begin{figure}[htbp]
 % %     \centering
@@ -143,7 +143,7 @@ The following functionality should be supported, according to \cref{fig:display_
 % %     \label{fig:3}
 % % \end{figure}
 
-% Based on these two blocks a graphical user interface could be constructed to show the object information as shown in the figure below. 
+% Based on these two blocks a graphical user interface could be constructed to show the object information as shown in the figure below.
 
 
 \subsection{Encoding}
@@ -152,12 +152,12 @@ This module is used to encode the input source using different algorithms. This 
 
 \begin{enumerate}
     \item Load selected options from file;
-    
-    \item Save selected options to a file; 
-    
+
+    \item Save selected options to a file;
+
     \item Call encoding function;
-    
-    \item Dynamic list of check boxes which are defined in a text file (see \cref{cod:encoding_options}). 
+
+    \item Dynamic list of check boxes which are defined in a text file (see \cref{cod:encoding_options}).
 \end{enumerate}
 
 \begin{figure}[htbp]
@@ -193,7 +193,7 @@ This module is used to encode the input source using different algorithms. This 
 
 % \cref{cod:encoding_options} shows an example of a file listing the options to be displayed in the graphical user interface. For instance, a dropdown menu should allow the user to chose a QP value, form the options $22$, $27$, $32$ and $37$. Furthermore, the checkbox list presents the options available to the user that can be selected by ticking the checkboxes.
 
-% In turn, \cref{cod:options_selected} shows the options mentioned above, that were selected by the user. This file serves two purposes: persisting the configurations set through the GUI for the encoder, when the `Save Config' button is hit, and serving as an interface between the GUI and the encoder when the `Encode' button is hit.  
+% In turn, \cref{cod:options_selected} shows the options mentioned above, that were selected by the user. This file serves two purposes: persisting the configurations set through the GUI for the encoder, when the `Save Config' button is hit, and serving as an interface between the GUI and the encoder when the `Encode' button is hit.
 
 % \begin{figure}[htbp]
 % \begin{minipage}[]{\linewidth}
@@ -203,16 +203,16 @@ This module is used to encode the input source using different algorithms. This 
 %     - "/cfg/encoder_randomaccess_vtm.cfg"
 %     - "/cfg-360Lib/per-sequence/360/360test_Harbor.cfg"
 %     - "/cfg-360Lib/encoder_360_ERP.cfg"
-    
+
 %   qp:
 %     - 22
-    
+
 %   rate_control:
 %     - 50000
-    
+
 %   number_of_frames_to_encode:
 %     - 10
-    
+
 %   ticked_checkboxes:
 %     - complexity_reduction_algorithm_A
 %     - spatial_scalability_algorithm_C
@@ -338,67 +338,21 @@ This function returns the list of available planar projection formats
 
 \mintinline{python}{host/get_projections}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsubsection*{\mintinline{python}{GetViewportInfo}}
-
-This function returns a viewport of the current frame
-
-\textbf{Arguments}
-
-\mintinline{latex}{int x}: viewport horizontal center position in degrees
-
-\mintinline{latex}{int y}: viewport vertical center position in degrees
-        
-\mintinline{latex}{int width}: width of the viewport in degree
-        
-\mintinline{latex}{int height}: height of the viewport in degrees
-
-\textbf{Returns}
-
-\mintinline{latex}{JSON object}: width and height of the viewport
-
-\textbf{Route}
-
-\mintinline{python}{host/get_viewport_info}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsubsection*{\mintinline{python}{GetViewport}}
-
-This function returns a viewport of the current frame
-
-\textbf{Arguments}
-
-\mintinline{latex}{int x}: viewport horizontal center position in degrees
-
-\mintinline{latex}{int y}: viewport vertical center position in degrees
-        
-\mintinline{latex}{int width}: width of the viewport in degree
-        
-\mintinline{latex}{int height}: height of the viewport in degrees
-
-\textbf{Returns}
-
-\mintinline{latex}{Byte array}: generated viewport
-
-\textbf{Route}
-
-\mintinline{python}{host/get_viewport}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection*{\mintinline{python}{GetFrameInfo}}
 
-This function returns a new frame on every call
+This function returns the information regarding a frame
 
 \textbf{Arguments}
 
-\mintinline{latex}{string projection}: initials of the planar projection format of the output
+\mintinline{latex}{string projection}: initials of the planar projection format of the output (default means original projection)
+\mintinline{latex}{int layer}: layer to return (default means highest layer)
 
 \textbf{Returns}
 
-\mintinline{latex}{JSON object}: width and height of the frame in a given projection
+\mintinline{latex}{JSON object}:  width, height and bytes/pixel of the frame in a given projection.
 
 \textbf{Route}
 
@@ -406,13 +360,39 @@ This function returns a new frame on every call
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsubsection*{\mintinline{python}{GetFrame}}
+\subsubsection*{\mintinline{python}{GetFrameRaw}}
 
-This function returns a new frame on every call
+This function returns a new raw frame (no signalling) on every call
 
 \textbf{Arguments}
 
-\mintinline{latex}{string projection}: initials of the planar projection format of the output
+\mintinline{latex}{string projection}: initials of the planar projection format of the output (default means original projection)
+\mintinline{latex}{int layer}: layer to return (default means highest layer)
+
+\textbf{Returns}
+
+\mintinline{latex}{Byte array}: new frame in raw format
+
+\textbf{Route}
+
+\mintinline{python}{host/get_frame_raw}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{\mintinline{python}{GetFrame}}
+
+This function returns a new frame on every call.
+At the beginning of the byte stream a sequence of ASCII:
+\begin{verbatim}
+[width]x[height]\n
+[bytes per pixel (Bpp)]\n
+( width * height * Bpp ) pixels bytes
+\end{verbatim}
+
+\textbf{Arguments}
+
+\mintinline{latex}{string projection}: initials of the planar projection format of the output (default means original projection)
+\mintinline{latex}{int layer}: layer to return (default means highest layer)
 
 \textbf{Returns}
 
@@ -421,6 +401,105 @@ This function returns a new frame on every call
 \textbf{Route}
 
 \mintinline{python}{host/get_frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{\mintinline{python}{GetViewportInfo}}
+
+This function returns a viewport of the current frame
+
+\textbf{Arguments}
+
+\mintinline{latex}{string coord}: coordinate system (pixel, polar)
+
+\mintinline{latex}{int x}: viewport horizontal center position in degrees
+
+\mintinline{latex}{int y}: viewport vertical center position in degrees
+
+\mintinline{latex}{int width}: width of the viewport in degree
+
+\mintinline{latex}{int height}: height of the viewport in degrees
+
+\mintinline{latex}{int layer}: layer to return (default means highest layer)
+
+\textbf{Returns}
+
+\mintinline{latex}{JSON object}: width, height and bytes/pixel of the viewport frame.
+
+\textbf{Route}
+
+\mintinline{python}{host/get_viewport_info}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{\mintinline{python}{GetViewportRaww}}
+
+This function returns a new frame with the desired viewport on every call.
+At the beginning of the byte stream a sequence of ASCII:
+\begin{verbatim}
+[width]x[height]\n
+[bytes per pixel (Bpp)]\n
+( width * height * Bpp ) pixels bytes
+\end{verbatim}
+
+\textbf{Arguments}
+
+\mintinline{latex}{string coord}: coordinate system (pixel, polar)
+
+\mintinline{latex}{int x}: viewport horizontal center position in degrees
+
+\mintinline{latex}{int y}: viewport vertical center position in degrees
+
+\mintinline{latex}{int width}: width of the viewport in degree
+
+\mintinline{latex}{int height}: height of the viewport in degrees
+
+\mintinline{latex}{int layer}: layer to return (default means highest layer)
+
+\textbf{Returns}
+
+\mintinline{latex}{Byte array}: header + byte array of the generated viewport
+
+\textbf{Route}
+
+\mintinline{python}{host/get_viewport_raw}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{\mintinline{python}{GetViewport}}
+
+This function returns a new frame with the desired viewport on every call.
+At the beginning of the byte stream a sequence of ASCII:
+\begin{verbatim}
+[width]x[height]\n
+[bytes per pixel (Bpp)]\n
+( width * height * Bpp ) pixels bytes
+\end{verbatim}
+
+\textbf{Arguments}
+
+\mintinline{latex}{string coord}: coordinate system (pixel, polar)
+
+\mintinline{latex}{int x}: viewport horizontal center position in degrees
+
+\mintinline{latex}{int y}: viewport vertical center position in degrees
+
+\mintinline{latex}{int width}: width of the viewport in degree
+
+\mintinline{latex}{int height}: height of the viewport in degrees
+
+\mintinline{latex}{int layer}: layer to return (default means highest layer)
+
+\textbf{Returns}
+
+\mintinline{latex}{Byte array}: header + byte array of the generated viewport
+
+\textbf{Route}
+
+\mintinline{python}{host/get_viewport}
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -477,9 +556,9 @@ This function sets the necessary parameters for generating a valid encoding comm
 \mintinline{latex}{string orig_yuv_path}: path to the sequence to be encoded
 
 \mintinline{latex}{string rec_yuv_pat}: path where the reconstructed sequence after enconding is to be stored
-        
+
 \mintinline{latex}{string out_bin_path}: path where the compressed sequence is to be stored
-        
+
 \mintinline{latex}{list cfg_files}: list of strings containing the paths for the cofiguration files (as given by GetCfgFiles) to be used
 
 \mintinline{latex}{list qp}: list of integers, containing the QP values to be used
