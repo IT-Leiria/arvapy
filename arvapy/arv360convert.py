@@ -129,14 +129,16 @@ class Arv360Convert(ArvFifo):
 
         # Create stream to send data to FIFO
         self.send_stream = Arv360StreamOutput(input_video)
-        self.send_stream.name = self.send_fifo_fname
+        self.send_stream.filename = self.send_fifo_fname
+        self.send_stream.num_layers = 1
 
         # Create stream to receive data from FIFO
         self.receive_stream = Arv360StreamInput()
-        self.receive_stream.name = self.receive_fifo_fname
+        self.receive_stream.filename = self.receive_fifo_fname
         self.receive_stream.width = converted_width
         self.receive_stream.height = converted_height
         self.receive_stream.bytes_per_pixel = 1
+        self.receive_stream.num_layers = 1
         self.receive_stream.PrintInfo()
 
         self.convert_to_projection = projection_idx

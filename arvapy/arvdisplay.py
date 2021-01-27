@@ -37,6 +37,7 @@ class ArvApyDisplay:
         This functions get a new frame in order to extract the information
         but buffers it until next call of Get360DegreeFrame
         """
+        layer = int(layer)
         if self.has_buffered_frame:
             if self.buffered_frame.projection == ConvertProjectionNameToInt(projection):
                 return self.buffered_frame
@@ -48,6 +49,7 @@ class ArvApyDisplay:
 
     def Get360DegreeFrame(self, projection="NA", layer=-1):
 
+        layer = int(layer)
         # Convert projection name to number
         projection = ConvertProjectionNameToInt(projection)
 
@@ -59,11 +61,11 @@ class ArvApyDisplay:
 
         # Get frame from original stream
         input_frame = Arv360Frame()
-        input_frame.width = self.input_stream.width
-        input_frame.height = self.input_stream.height
+        input_frame.width = self.input_stream.GetWidth( layer )
+        input_frame.height = self.input_stream.GetHeight( layer )
         input_frame.bytes_per_pixel = self.input_stream.bytes_per_pixel
         input_frame.projection = self.input_stream.projection
-        input_frame.data = self.input_stream.ReadFrame()
+        input_frame.data = self.input_stream.ReadFrame( layer )
 
         self.last_read_frame = input_frame
 
@@ -84,6 +86,7 @@ class ArvApyDisplay:
         This functions get a new viewport in order to extract the information
         but buffers it untill next call of Get360DegreeViewport
         """
+        layer = int(layer)
         if self.has_buffered_frame:
             if self.buffered_frame.projection == ConvertProjectionNameToInt("RECT"):
                 return self.buffered_frame
@@ -95,6 +98,7 @@ class ArvApyDisplay:
 
     def Get360DegreeViewport(self, coord_type, x, y, width, height, layer ):
         
+        layer = int(layer)
         if self.has_buffered_frame:
             # Perform checks to see if this frame matches the projection and layer
             if self.buffered_frame.projection == ConvertProjectionNameToInt("RECT"):
@@ -109,10 +113,10 @@ class ArvApyDisplay:
 
         if coord_type == "pixel":
             # TODO: Fix conversion from x,y to angular coordinates
-            viewport_center_x = ( x - self.input_stream.width / 2 ) / self.input_stream.width * 2 * 180
-            viewport_center_y = (  self.input_stream.height / 2 - y ) / self.input_stream.height * 2 * 90
-            angular_width = int( width / self.input_stream.width * 360 )
-            angular_height = int( height / self.input_stream.height * 180 )
+            viewport_center_x = ( x - self.input_stream.GetWidth() / 2 ) / self.input_stream.GetWidth() * 2 * 180
+            viewport_center_y = (  self.input_stream.GetHeight() / 2 - y ) / self.input_stream.GetHeight() * 2 * 90
+            angular_width = int( width / self.input_stream.GetWidth() * 360 )
+            angular_height = int( height / self.input_stream.GetHeight() * 180 )
         elif coord_type == "polar":
             viewport_center_x = x
             viewport_center_y = y
@@ -122,8 +126,8 @@ class ArvApyDisplay:
             raise "Invalid coordinate system"
 
         # Width is estimated from the size of the original stream
-        viewport_width = self.AdjustDimension( self.input_stream.width * angular_width /  360 )
-        viewport_height = self.AdjustDimension( self.input_stream.height * angular_height / 180 )
+        viewport_width = self.AdjustDimension( self.input_stream.GetWidth() * angular_width /  360 )
+        viewport_height = self.AdjustDimension( self.input_stream.GetHeight() * angular_height / 180 )
         
         viewport_settings = str(angular_width) + " " + str(angular_height) + " " + str(viewport_center_x) + " " +  str(viewport_center_y)
         

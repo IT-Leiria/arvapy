@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 # Base variables and methods
-url_base_path = "http://zeus.itleiria.pt:5000/" 
+url_base_path = "http://localhost:5000/" 
 
 
 ## 1. Select stream
@@ -19,11 +19,10 @@ r = requests.get(url_base_path + "get_stream_list")
 for i, s in enumerate(literal_eval(r.content.decode())):
     print({"name": s[0], "width": s[1], "height": s[2], "bytes_per_pixel": s[3], "number_of_layers": s[4]})
 
-exit 
- 
+
 # 1.2 Select stream
 print("1.2 Select stream")
-r = requests.get(url_base_path + "select_stream?idx=0")  # post?
+r = requests.get(url_base_path + "select_stream?idx=4")  # post?
 print(r.status_code)
 
 
@@ -56,10 +55,10 @@ def display_frame_raw(r_content,shape):
     else:
         print("Received an empty bytearray!")
 
-def get_frame(proj):
+def get_frame(proj, layer=-1):
     """ Auxiliar method to: get_frame_info proj, get_frame_raw proj, display image."""
     # get frame info for ERP
-    r_info = requests.get(url_base_path + "get_frame_info?projection="+proj)
+    r_info = requests.get(url_base_path + "get_frame_info?projection="+proj+"&layer="+str(layer))
     frame_info = literal_eval(r_info.content.decode())
     print("Frame info:", frame_info)
 
@@ -68,7 +67,7 @@ def get_frame(proj):
     shape = (int(height * 1.5), width)
 
     # Get frame raw
-    r_content = requests.get(url_base_path + "get_frame_raw?projection="+proj, stream=True).content
+    r_content = requests.get(url_base_path + "get_frame_raw?projection="+proj+"&layer="+str(layer), stream=True).content
     display_frame_raw(r_content,shape)
 
 
@@ -84,6 +83,11 @@ print("4.3 Get projections (get_projections) - CISP")
 get_frame("CISP")
 get_frame("CISP")
 
+print("4.2 Get projections in different layer (get_projections)")
+get_frame("ERP", 0 )
+get_frame("ERP", 0 )
+get_frame("ERP", 1 )
+get_frame("ERP", 2 )
 
 
 ## 5. Test Viewport
