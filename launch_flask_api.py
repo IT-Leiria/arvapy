@@ -72,7 +72,7 @@ def GetNumberOfFaces():
             int: number of faces/sides
     """
     p = request.args.get("projection", "NA")
-    return str(6)
+    return json.dumps(str(6))
 
 @app.route('/get_layer_info')
 def GetLayerInfo():
