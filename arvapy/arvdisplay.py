@@ -99,14 +99,15 @@ class ArvApyDisplay:
         return self.convert_function_module.ConvertFrame(input_frame)
 
     def Crop360DegreeFrameToFace(self, org_frame, projection, face_id):
+        face_id = int( face_id )
         if projection == "CMP":
-            face_y = int(face_id / 3)
-            face_x = face_id - face_y * 3
+            face_y = int( face_id / 3)
+            face_x = int( face_id - face_y * 3 )
 
-            x_pos = org_frame.width / 3 * face_x
-            y_pos = org_frame.height / 2 * face_y
-            face_width = org_frame.width / 3
-            face_height = org_frame.height / 2
+            x_pos = int( org_frame.width / 3 * face_x )
+            y_pos = int( org_frame.height / 2 * face_y )
+            face_width = int( org_frame.width / 3 )
+            face_height = int( org_frame.height / 2 )
 
             face_frame = org_frame.cropFrame( x_pos, y_pos, face_width, face_height )
 
@@ -119,7 +120,7 @@ class ArvApyDisplay:
         return self.Crop360DegreeFrameToFace(frame, projection, face_id )
 
     def Get360DegreeProjectionFace(self, projection, face_id, layer=-1):
-        frame = self.Get360DegreeFrame(projection, layer)
+        frame = self.Get360DegreeFrameInfo(projection, layer)
         return self.Crop360DegreeFrameToFace(frame, projection, face_id )
 
 
