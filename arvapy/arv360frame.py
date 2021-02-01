@@ -7,6 +7,7 @@ class Arv360Frame:
         self.height = height
         self.projection = 0
         self.bytes_per_pixel = bpp
+        self.layer = -1
 
         if other is not None:
             self.data = other.data
