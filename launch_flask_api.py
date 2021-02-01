@@ -191,7 +191,6 @@ def GetProejctionFaceInfo():
     frame_info['Bpp'] = frame.bytes_per_pixel
     frame_info['byte_length'] = len( frame.rawData() )
     return json.dumps(frame_info)
-    return frame.rawData()
 
 
 @app.route('/get_projection_face_raw')
