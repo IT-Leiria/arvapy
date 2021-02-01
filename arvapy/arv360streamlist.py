@@ -1,6 +1,6 @@
 from .arv360stream import Arv360Stream
 
-NumberOfStreams = 5
+NumberOfStreams = 4
 
 ArvApyStreamList = [ Arv360Stream() for i in range(NumberOfStreams)]
 n = -1
@@ -24,44 +24,44 @@ ArvApyStreamList[n].bytes_per_pixel = 1
 ArvApyStreamList[n].num_layers = 1
 
 n += 1
-ArvApyStreamList[n].name = "Touvet"
-ArvApyStreamList[n].filename_list = [    
-    "/datasets/Touvet_64Frm_QP37_8bpp.yuv",
+ArvApyStreamList[n].name = "Touvet (2 Quality Layers)"
+ArvApyStreamList[n].filename_list = [
+    "/datasets/Touvet_64Frm_QP22_8bpp_UP.yuv",
     "/datasets/Touvet_64Frm_QP22_8bpp.yuv",
 ]
 ArvApyStreamList[n].resolution_list = [
     (3840,1920),
     (3840,1920)
 ]
+ArvApyStreamList[n].quality_list = [
+    "Low",
+    "High"
+]
 ArvApyStreamList[n].projection = 0
 ArvApyStreamList[n].bytes_per_pixel = 1
 ArvApyStreamList[n].num_layers = 2
 
-n += 1
-ArvApyStreamList[n].name = "Foreman"
-ArvApyStreamList[n].filename = "/datasets/Foreman_CIF.yuv"
-ArvApyStreamList[n].width = 352
-ArvApyStreamList[n].height = 288
-ArvApyStreamList[n].projection = 0
-ArvApyStreamList[n].bytes_per_pixel = 1
-ArvApyStreamList[n].num_layers = 1
 
 n += 1
-ArvApyStreamList[n].name = "Foreman (Multi-layer)"
-ArvApyStreamList[n].filename_list = [    
-    "/datasets/Foreman_CIF.yuv",
-    "/datasets/Foreman_CIF.yuv",
-    "/datasets/Foreman_CIF.yuv",
+ArvApyStreamList[n].name = "Touvet (3 Spatial Layers)"
+ArvApyStreamList[n].filename_list = [
+    "/datasets/Touvet_64Frm_QP22_8bpp_960.yuv",
+    "/datasets/Touvet_64Frm_QP22_8bpp_1920.yuv",
+    "/datasets/Touvet_64Frm_QP22_8bpp.yuv",
 ]
 ArvApyStreamList[n].resolution_list = [
-    (352,288),
-    (352,288),
-    (352,288)
+    (960,480),
+    (1920,960),
+    (3840,1920)
+]
+ArvApyStreamList[n].quality_list = [
+    "Low",
+    "Medium",
+    "High"
 ]
 ArvApyStreamList[n].projection = 0
 ArvApyStreamList[n].bytes_per_pixel = 1
 ArvApyStreamList[n].num_layers = 3
-
 
 
 def GetListOfAvailableStreams():
