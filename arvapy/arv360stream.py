@@ -7,6 +7,7 @@ class Arv360Stream:
         self.width = -1
         self.height = -1
         self.resolution_list = None
+        self.quality_list = None
         self.frame_rate = -1
         self.projection = 0
         self.bytes_per_pixel = 1
@@ -19,13 +20,26 @@ class Arv360Stream:
             self.width = other.width
             self.height = other.height
             self.resolution_list = other.resolution_list
+            self.quality_list = other.quality_list
             self.frame_rate = other.frame_rate
             self.projection = other.projection
             self.bytes_per_pixel = other.bytes_per_pixel
             self.num_layers = other.num_layers
 
+        if self.num_layers > 1:
+            assert( len( self.filename_list ) == self.num_layers )
+            assert( len( self.resolution_list ) == self.num_layers )
+            assert( len( self.quality_list ) == self.num_layers )
+
         self.width = self.GetWidth()
         self.height = self.GetHeight()
+
+    def LayerInformation(self):
+        layer_info = []
+        for l in range( self.num_layers):
+            l_info = "Quality: %s | Resolution: %dx%d" % (self.quality_list[l], self.resolution_list[l][0], self.resolution_list[l][1] )
+            layer_info.append( (l, l_info) )
+        return layer_info
 
     def CloseStream(self):
         for file in self.binary_file:
@@ -42,7 +56,7 @@ class Arv360Stream:
             layer = self.num_layers -1 if layer == -1 else layer
             return self.resolution_list[layer][0]
         return self.width
-        
+
     def GetHeight(self, layer = -1):
         if self.num_layers > 1:
             layer = self.num_layers -1 if layer == -1 else layer
@@ -76,7 +90,7 @@ class Arv360StreamInput(Arv360Stream):
                 self.binary_file.append( open(file, "rb") )
         else:
             self.binary_file.append( open(self.filename, "rb") )
-        
+
 
     def ReadFrame(self, layer = -1):
         if layer == -1:

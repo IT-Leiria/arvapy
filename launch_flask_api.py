@@ -28,14 +28,14 @@ def Get360StreamList():
 
     """
     return json.dumps(ArvApyData.Get360DegreeStreams())
-  
+
 @app.route('/select_stream')
 def Select360Stream():
     """
     This function selects the desired 360-degree stream.
 
     Args:
-        idx (integer): index of the video stream in the array 
+        idx (integer): index of the video stream in the array
                      returned by Get360StreamList
 
     Returns:
@@ -43,7 +43,7 @@ def Select360Stream():
     """
     idx = request.args.get("idx", 0)
     return str(arvapy.Select360Stream(idx))
-  
+
 @app.route('/get_projection_list')
 def GetProjectionList():
     """
@@ -55,6 +55,41 @@ def GetProjectionList():
         json object: pair of projection initial and name
     """
     return json.dumps(arvapy.display_module.Get360DegreeProjections())
+
+@app.route('/get_number_faces')
+def GetNumberOfFaces():
+    """
+        REST API Get Number of Faces/Sides
+
+        This function returns the number of faces/sides of
+        a given projection of 360-degree video frame.
+
+        Args:
+            projection (string): initials of the planar projection format of the output
+            (default means cube-map projection)
+
+        Returns:
+            int: number of faces/sides
+    """
+    p = request.args.get("projection", "NA")
+    return str(6)
+
+@app.route('/get_layer_info')
+def GetLayerInfo():
+    """
+    REST API Get Layer Info
+
+    This function returns the information regarding the available layer of a given stream
+
+    Args:
+         idx (integer): index of the video stream in the array
+                     returned by Get360StreamList
+
+    Returns:
+        json object: list of pairs (layer idx, layer description)
+    """
+    idx = request.args.get("idx", 0)
+    return json.dumps(arvapy.GetLayerInfo(idx))
 
 @app.route('/get_frame_info')
 def GetFrameInfo():
@@ -79,7 +114,7 @@ def GetFrameInfo():
     frame_info['Bpp'] = frame.bytes_per_pixel
     frame_info['byte_length'] = len( frame.rawData() )
     return json.dumps(frame_info)
-  
+
 @app.route('/get_frame_raw')
 def GetFrameRaw():
     """
@@ -124,6 +159,102 @@ def GetFrame():
     frame = arvapy.display_module.Get360DegreeFrame(projection=p, layer=l)
     return frame.formatedData()
 
+@app.route('/get_projection_face_info')
+def GetProejctionFaceInfo():
+    """
+    REST API Get Proejction Face Info
+
+    This function returns part of the 360-degree video frame.
+    For example it returns a face of a polyhedron-based projection.
+
+    Currently, it will always return a face of the cube-map projection.
+    In future it will return a frame from each projection selected.
+
+    Args:
+        projection (string): initials of the planar projection format of the output
+        (default means cube-map projection)
+
+        face (integer): the number of the face
+
+        layer (integer): layer to return (default means highest layer)
+
+    Returns:
+        json object: width, height and bytes/pixel of the frame containingthe a face of a given projection
+    """
+    p = request.args.get("projection", "CMP")
+    f = request.args.get("face")
+    l = request.args.get("layer", "-1")
+    frame = arvapy.display_module.Get360DegreeProjectionFaceInfo(projection=p, face_id=f, layer=l)
+    frame_info = {}
+    frame_info['width'] = frame.width
+    frame_info['height'] = frame.height
+    frame_info['Bpp'] = frame.bytes_per_pixel
+    frame_info['byte_length'] = len( frame.rawData() )
+    return json.dumps(frame_info)
+    return frame.rawData()
+
+
+@app.route('/get_projection_face_raw')
+def GetProjectionFaceRaW():
+    """
+    REST API Get Projection Face Raw
+
+    This function returns part of the 360-degree video frame.
+    For example it returns a face of a polyhedron-based projection.
+
+    Currently, it will always return a face of the cube-map projection.
+    In future it will return a frame from each projection selected.
+
+    Args:
+        projection (string): initials of the planar projection format of the output
+        (default means cube-map projection)
+
+        face (integer): the number of the face
+
+        layer (integer): layer to return (default means highest layer)
+
+    Returns:
+        byte array: new frame in raw format
+    """
+    p = request.args.get("projection", "CMP")
+    f = request.args.get("face")
+    l = request.args.get("layer", "-1")
+    frame = arvapy.display_module.Get360DegreeProjectionFace(projection=p, face_id=f, layer=l)
+    return frame.rawData()
+
+
+@app.route('/get_projection_face')
+def GetProjectionFace():
+    """
+    REST API Get Projection Face
+
+    This function returns part of the 360-degree video frame.
+    For example it returns a face of a polyhedron-based projection.
+
+    Currently, it will always return a face of the cube-map projection.
+    In future it will return a frame from each projection selected.
+
+    At the beginning of the byte stream a sequence of ASCII chars are sent:
+      [width]x[height]\n
+      [bytes per pixel (Bpp)]\n
+      ( width * height * Bpp ) pixels bytes
+
+    Args:
+        projection (string): initials of the planar projection format of the output
+        (default means cube-map projection)
+
+        face (integer): the number of the face
+
+        layer (integer): layer to return (default means highest layer)
+
+    Returns:
+        header + byte array: new frame
+    """
+    p = request.args.get("projection", "CMP")
+    f = request.args.get("face")
+    l = request.args.get("layer", "-1")
+    frame = arvapy.display_module.Get360DegreeProjectionFace(projection=p, face_id=f, layer=l)
+    return frame.formatedData()
 
 @app.route('/get_viewport_info')
 def GetViewportInfo():
@@ -156,7 +287,7 @@ def GetViewportInfo():
     viewport_info['Bpp'] = viewport.bytes_per_pixel
     viewport_info['byte_length'] = len( viewport.rawData() )
     return json.dumps(viewport_info)
-  
+
 @app.route('/get_viewport_raw')
 def GetViewportRaw():
     """
