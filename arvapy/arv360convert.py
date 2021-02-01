@@ -86,7 +86,7 @@ class Arv360Convert(ArvFifo):
         self.convert_config.append(["OutputFile", self.receive_fifo_fname])
         self.convert_config.append(["CodingGeometryType", projection_config_type])
         self.convert_config.append(["CodingFPStructure", projection_config_fps])
-        
+
         if width > 0:
           self.convert_config.append(["CodingFaceWidth", width])
         if height > 0:
@@ -161,16 +161,17 @@ class Arv360Convert(ArvFifo):
             self.receive_stream.OpenStream()
             self.is_running = True
 
-    def ConvertFrame(self, input_frame_data):
-      
+    def ConvertFrame(self, input_frame):
+
         output_frame = Arv360Frame()
         output_frame.width = self.receive_stream.width
         output_frame.height = self.receive_stream.height
         output_frame.bytes_per_pixel = self.receive_stream.bytes_per_pixel
         output_frame.projection = self.convert_to_projection
-        
+        output_frame.layer = input_frame.layer
+
         self.LaunchConvertCommand()
-        self.send_stream.WriteFrame(input_frame_data)
+        self.send_stream.WriteFrame(input_frame.data)
         output_frame.data = self.receive_stream.ReadFrame()
-        
+
         return output_frame
