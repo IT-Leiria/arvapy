@@ -1,3 +1,4 @@
 __pycache__/
 arvapy/__pycache__/
 docker/data/
+.vscode/
