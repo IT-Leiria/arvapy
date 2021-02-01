@@ -20,7 +20,7 @@
 
 \usemintedstyle{friendly}
 
-\title{\textbf{360$^\circ$ Video Coding}\\ \textbf{Simulation Tool}}
+\title{\textbf{360$^\circ$ Video Coding} \textbf{Simulation Tool}}
 \author{João Carreira, José Filipe, António Navarro, Pedro Assunção}
 \date{\today}
 
@@ -308,6 +308,21 @@ This function returns a list of arrays with the following information in order: 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\subsubsection*{\mintinline{python}{GetLayerInfo}}
+
+This function returns the information regarding the available layer of a given stream.
+
+\textbf{Returns}
+
+\mintinline{latex}{JSON object}: list of pairs (layer idx, layer description)
+
+\textbf{Route}
+
+\mintinline{python}{host/get_layer_info}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsubsection*{\mintinline{python}{Select360Stream}}
 
 This function selects the desired 360-degree stream.
@@ -396,11 +411,85 @@ At the beginning of the byte stream a sequence of ASCII:
 
 \textbf{Returns}
 
-\mintinline{latex}{Byte array}: new frame in raw format
+\mintinline{latex}{Byte array}: header + bytes of the frame
 
 \textbf{Route}
 
 \mintinline{python}{host/get_frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{\mintinline{python}{GetProejctionFaceInfo}}
+
+This function returns part of the 360-degree video frame.
+For example it returns a face of a polyhedron-based projection.
+
+Currently, it will always return a face of the cube-map projection.
+In future it will return a frame from each projection selected.
+
+\textbf{Arguments}
+
+\mintinline{latex}{string projection}: initials of the planar projection format of the output (default means original projection)
+\mintinline{latex}{int face}: the number of the face
+\mintinline{latex}{int layer}: layer to return (default means highest layer)
+
+\textbf{Returns}
+
+\mintinline{latex}{JSON object}:  width, height and bytes/pixel of the frame containingthe a face of a given projection.
+
+\textbf{Route}
+
+\mintinline{python}{host/get_projection_face_info}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{\mintinline{python}{GetProjectionFaceRaW}}
+
+This function returns part of the 360-degree video frame.
+For example it returns a face of a polyhedron-based projection in raw format (no signalling) on every call.
+
+Currently, it will always return a face of the cube-map projection.
+In future it will return a frame from each projection selected.
+
+\textbf{Arguments}
+
+\mintinline{latex}{string projection}: initials of the planar projection format of the output (default means original projection)
+\mintinline{latex}{int face}: the number of the face
+\mintinline{latex}{int layer}: layer to return (default means highest layer)
+
+\textbf{Returns}
+
+\mintinline{latex}{Byte array}: new frame in raw format
+
+\textbf{Route}
+
+\mintinline{python}{host/get_projection_face_raw}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{\mintinline{python}{GetProjectionFace}}
+
+This function returns part of the 360-degree video frame on every call (with signalling).
+At the beginning of the byte stream a sequence of ASCII:
+\begin{verbatim}
+[width]x[height]\n
+[bytes per pixel (Bpp)]\n
+( width * height * Bpp ) pixels bytes
+\end{verbatim}
+
+\textbf{Arguments}
+
+\mintinline{latex}{string projection}: initials of the planar projection format of the output (default means original projection)
+\mintinline{latex}{int face}: the number of the face
+\mintinline{latex}{int layer}: layer to return (default means highest layer)
+
+\textbf{Returns}
+
+\mintinline{latex}{Byte array}:  header + bytes of the face requested
+
+\textbf{Route}
+
+\mintinline{python}{host/get_projection_face}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -432,7 +521,7 @@ This function returns a viewport of the current frame
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsubsection*{\mintinline{python}{GetViewportRaww}}
+\subsubsection*{\mintinline{python}{GetViewportRaw}}
 
 This function returns a new frame with the desired viewport on every call.
 At the beginning of the byte stream a sequence of ASCII:
