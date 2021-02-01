@@ -28,6 +28,13 @@ class ArvApyDisplay:
             raise
         return int(ret)
 
+    def CheckBufferedFrame(self, projection, layer ):
+        if self.has_buffered_frame:
+            if self.buffered_frame.projection == projection and \
+                self.buffered_frame.layer == layer:
+                return self.buffered_frame
+        return None
+
 
     def Get360DegreeProjections(self):
         return ConvertProjectionList()
@@ -38,9 +45,14 @@ class ArvApyDisplay:
         but buffers it until next call of Get360DegreeFrame
         """
         layer = int(layer)
-        if self.has_buffered_frame:
-            if self.buffered_frame.projection == ConvertProjectionNameToInt(projection):
-                return self.buffered_frame
+        # Always return the highest layer, regardless of the request
+        if layer < 0 or layer > self.input_stream.num_layers:
+            layer = self.input_stream.num_layers - 1
+
+        frame = self.CheckBufferedFrame( ConvertProjectionNameToInt(projection), layer)
+        if not frame == None:
+            print("Re-using buffered frame!")
+            return frame
 
         frame = self.Get360DegreeFrame(projection, layer)
         self.buffered_frame = frame
@@ -50,14 +62,18 @@ class ArvApyDisplay:
     def Get360DegreeFrame(self, projection="NA", layer=-1):
 
         layer = int(layer)
+        # Always return the highest layer, regardless of the request
+        if layer < 0 or layer > self.input_stream.num_layers:
+            layer = self.input_stream.num_layers - 1
+
         # Convert projection name to number
         projection = ConvertProjectionNameToInt(projection)
 
-        if self.has_buffered_frame:
-            # Perform checks to see if this frame matches the projection and layer
-            if self.buffered_frame.projection == projection:
-                self.has_buffered_frame = False
-                return self.buffered_frame
+        frame = self.CheckBufferedFrame( projection, layer)
+        if not frame == None:
+            print("Re-using buffered frame!")
+            self.has_buffered_frame = False
+            return frame
 
         # Get frame from original stream
         input_frame = Arv360Frame()
@@ -66,6 +82,7 @@ class ArvApyDisplay:
         input_frame.bytes_per_pixel = self.input_stream.bytes_per_pixel
         input_frame.projection = self.input_stream.projection
         input_frame.data = self.input_stream.ReadFrame( layer )
+        input_frame.layer = layer
 
         self.last_read_frame = input_frame
 
@@ -79,7 +96,7 @@ class ArvApyDisplay:
             self.convert_function_module.InitConversion(self.input_stream, projection)
 
         # Return converted frame
-        return self.convert_function_module.ConvertFrame(input_frame.data)
+        return self.convert_function_module.ConvertFrame(input_frame)
 
     def Crop360DegreeFrameToFace(self, org_frame, projection, face_id):
         if projection == "CMP":
@@ -112,9 +129,14 @@ class ArvApyDisplay:
         but buffers it untill next call of Get360DegreeViewport
         """
         layer = int(layer)
-        if self.has_buffered_frame:
-            if self.buffered_frame.projection == ConvertProjectionNameToInt("RECT"):
-                return self.buffered_frame
+        # Always return the highest layer, regardless of the request
+        if layer < 0 or layer > self.input_stream.num_layers:
+            layer = self.input_stream.num_layers - 1
+
+        frame = self.CheckBufferedFrame( ConvertProjectionNameToInt("RECT"), layer)
+        if not frame == None:
+            print("Re-using buffered frame!")
+            return frame
 
         frame = self.Get360DegreeViewport(coord_type, x, y, width, height, layer)
         self.buffered_frame = frame
@@ -124,17 +146,20 @@ class ArvApyDisplay:
     def Get360DegreeViewport(self, coord_type, x, y, width, height, layer ):
 
         layer = int(layer)
-        if self.has_buffered_frame:
-            # Perform checks to see if this frame matches the projection and layer
-            if self.buffered_frame.projection == ConvertProjectionNameToInt("RECT"):
-                self.has_buffered_frame = False
-                return self.buffered_frame
+        # Always return the highest layer, regardless of the request
+        if layer < 0 or layer > self.input_stream.num_layers:
+            layer = self.input_stream.num_layers - 1 - 1
+
+        frame = self.CheckBufferedFrame( ConvertProjectionNameToInt("RECT"), layer)
+        if not frame == None:
+            print("Re-using buffered frame!")
+            self.has_buffered_frame = False
+            return frame
 
         x = float( x )
         y = float( y )
         width = float( width )
         height = float( height )
-        layer = int( layer )
 
         if coord_type == "pixel":
             # TODO: Fix conversion from x,y to angular coordinates
@@ -177,5 +202,5 @@ class ArvApyDisplay:
             self.viewport_function_module.convertion_hash = new_hash
 
         # Return converted frame
-        converted_frame = self.viewport_function_module.ConvertFrame(input_frame.data)
+        converted_frame = self.viewport_function_module.ConvertFrame(input_frame)
         return converted_frame
