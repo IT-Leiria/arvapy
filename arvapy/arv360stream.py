@@ -51,17 +51,20 @@ class Arv360Stream:
             return self.filename_list[layer]
         return self.filename
 
-    def GetWidth(self, layer = -1):
+    def GetDimensionSize(self, layer, dim):
         if self.num_layers > 1:
-            layer = self.num_layers -1 if layer == -1 else layer
-            return self.resolution_list[layer][0]
-        return self.width
+            if layer < self.num_layers:
+                layer = self.num_layers -1 if layer == -1 else layer
+                return self.resolution_list[layer][dim]
+        return -1
+
+    def GetWidth(self, layer = -1):
+        width = self.GetDimensionSize(layer, 0 )
+        return width if width > 0 else self.width
 
     def GetHeight(self, layer = -1):
-        if self.num_layers > 1:
-            layer = self.num_layers -1 if layer == -1 else layer
-            return self.resolution_list[layer][1]
-        return self.height
+        height = self.GetDimensionSize(layer, 1 )
+        return height if height > 0 else self.height
 
     def PrintInfo(self):
         if self.name is None:
