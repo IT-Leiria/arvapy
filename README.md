@@ -18,3 +18,15 @@ Then run inside the docker folder in order to build the docker image:
 Finally, run use the container using:
 
 `docker-compose up`
+
+
+### Documentation
+
+A LaTeX document is presented in the `doc` folder with a description of the 
+concept of this API and the relevant REST API functions to use.
+
+Build it using:
+
+`latexmk`
+or
+`pdflatex -interaction=nonstopmode --shell-escape doc.tex`
