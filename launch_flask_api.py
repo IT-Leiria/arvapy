@@ -113,6 +113,7 @@ def GetFrameInfo():
     frame_info['height'] = frame.height
     frame_info['Bpp'] = frame.bytes_per_pixel
     frame_info['byte_length'] = len( frame.rawData() )
+    frame_info['bitrate'] = 9999 # TODO: measure this value dinamically
     return json.dumps(frame_info)
 
 @app.route('/get_frame_raw')
@@ -190,6 +191,7 @@ def GetProejctionFaceInfo():
     frame_info['height'] = frame.height
     frame_info['Bpp'] = frame.bytes_per_pixel
     frame_info['byte_length'] = len( frame.rawData() )
+    frame_info['bitrate'] = 9999 # TODO: measure this value dinamically
     return json.dumps(frame_info)
 
 
@@ -285,6 +287,7 @@ def GetViewportInfo():
     viewport_info['height'] = viewport.height
     viewport_info['Bpp'] = viewport.bytes_per_pixel
     viewport_info['byte_length'] = len( viewport.rawData() )
+    viewport_info['bitrate'] = 9999 # TODO: measure this value dinamically
     return json.dumps(viewport_info)
 
 @app.route('/get_viewport_raw')
