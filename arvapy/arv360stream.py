@@ -1,3 +1,7 @@
+from .arvutils import readSummaryFile
+
+from math import floor
+from os import path
 class Arv360Stream:
     def __init__(self, other=None):
         self.binary_file = []
@@ -12,6 +16,9 @@ class Arv360Stream:
         self.projection = 0
         self.bytes_per_pixel = 1
         self.num_layers = 1
+        self.summary_info_file = ""
+        self.summary_info = []
+        self.average_bitrate = 9999
 
         if other is not None:
             self.name = other.name
@@ -25,6 +32,9 @@ class Arv360Stream:
             self.projection = other.projection
             self.bytes_per_pixel = other.bytes_per_pixel
             self.num_layers = other.num_layers
+            self.summary_info_file = other.summary_info_file
+            # We do not need to copy summary_info since we can just read from file on Open
+            self.average_bitrate = other.average_bitrate
 
         if self.num_layers > 1:
             assert( len( self.filename_list ) == self.num_layers )
@@ -34,12 +44,19 @@ class Arv360Stream:
         self.width = self.GetWidth()
         self.height = self.GetHeight()
 
+        self.num_of_ctus_width = floor( self.width + 127 / 128 )
+        self.num_of_ctus_height = floor( self.height + 127 / 128 )
+
     def LayerInformation(self):
         layer_info = []
         for l in range( self.num_layers):
             l_info = "Quality: %s | Resolution: %dx%d" % (self.quality_list[l], self.resolution_list[l][0], self.resolution_list[l][1] )
             layer_info.append( (l, l_info) )
         return layer_info
+
+    def ReadSummaryInfo(self):
+        if path.exists(self.summary_info_file):
+            self.summary_info = readSummaryFile( self.summary_info_file )
 
     def CloseStream(self):
         for file in self.binary_file:
@@ -52,10 +69,9 @@ class Arv360Stream:
         return self.filename
 
     def GetDimensionSize(self, layer, dim):
-        if self.num_layers > 1:
-            if layer < self.num_layers:
-                layer = self.num_layers -1 if layer == -1 else layer
-                return self.resolution_list[layer][dim]
+        if self.resolution_list is not None and len(self.resolution_list) > layer and layer < self.num_layers:
+            layer = self.num_layers -1 if layer == -1 else layer
+            return self.resolution_list[layer][dim]
         return -1
 
     def GetWidth(self, layer = -1):
@@ -65,6 +81,13 @@ class Arv360Stream:
     def GetHeight(self, layer = -1):
         height = self.GetDimensionSize(layer, 1 )
         return height if height > 0 else self.height
+
+    def GetBitrate(self, layer = -1 ):
+        #try:
+        return self.summary_info["Bitrate_L0"]
+        #except:
+        #    pass
+        return self.average_bitrate
 
     def PrintInfo(self):
         if self.name is None:
@@ -93,6 +116,8 @@ class Arv360StreamInput(Arv360Stream):
                 self.binary_file.append( open(file, "rb") )
         else:
             self.binary_file.append( open(self.filename, "rb") )
+
+        self.ReadSummaryInfo()
 
 
     def ReadFrame(self, layer = -1):
