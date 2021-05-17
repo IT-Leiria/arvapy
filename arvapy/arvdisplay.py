@@ -83,6 +83,7 @@ class ArvApyDisplay:
         input_frame.projection = self.input_stream.projection
         input_frame.data = self.input_stream.ReadFrame( layer )
         input_frame.layer = layer
+        input_frame.bitrate = self.input_stream.GetBitrate( layer )
 
         self.last_read_frame = input_frame
 
@@ -176,6 +177,8 @@ class ArvApyDisplay:
         else:
             raise "Invalid coordinate system"
 
+        viewport_ratio = angular_width * angular_height / (360 * 180)
+
         # Width is estimated from the size of the original stream
         viewport_width = self.AdjustDimension( self.input_stream.GetWidth() * angular_width /  360 )
         viewport_height = self.AdjustDimension( self.input_stream.GetHeight() * angular_height / 180 )
@@ -204,4 +207,7 @@ class ArvApyDisplay:
 
         # Return converted frame
         converted_frame = self.viewport_function_module.ConvertFrame(input_frame)
+        # Currently make viewport bitrate be proportional to the total bitrate.
+        # TODO: improve bitrate calculation
+        converted_frame = input_frame.bitrate * viewport_ratio
         return converted_frame
