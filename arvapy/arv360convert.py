@@ -163,12 +163,11 @@ class Arv360Convert(ArvFifo):
 
     def ConvertFrame(self, input_frame):
 
-        output_frame = Arv360Frame()
+        output_frame = Arv360Frame(input_frame)
         output_frame.width = self.receive_stream.width
         output_frame.height = self.receive_stream.height
         output_frame.bytes_per_pixel = self.receive_stream.bytes_per_pixel
         output_frame.projection = self.convert_to_projection
-        output_frame.layer = input_frame.layer
 
         self.LaunchConvertCommand()
         self.send_stream.WriteFrame(input_frame.data)
