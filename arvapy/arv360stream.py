@@ -83,10 +83,10 @@ class Arv360Stream:
         return height if height > 0 else self.height
 
     def GetBitrate(self, layer = -1 ):
-        #try:
-        return self.summary_info["Bitrate_L0"]
-        #except:
-        #    pass
+        try:
+            return float( self.summary_info["Bitrate_L0"] )
+        except:
+            pass
         return self.average_bitrate
 
     def PrintInfo(self):

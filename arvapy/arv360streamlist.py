@@ -1,6 +1,6 @@
 from .arv360stream import Arv360Stream
 
-NumberOfStreams = 4
+NumberOfStreams = 6
 
 ArvApyStreamList = [ Arv360Stream() for i in range(NumberOfStreams)]
 n = -1
@@ -63,6 +63,39 @@ ArvApyStreamList[n].projection = 0
 ArvApyStreamList[n].bytes_per_pixel = 1
 ArvApyStreamList[n].num_layers = 3
 
+
+n += 1
+ArvApyStreamList[n].name = "Plan Energy Bio Lab  (Single layer)"
+ArvApyStreamList[n].filename_list = [
+    "/datasets/Finish_res_EncoderSVVC360_VTM-91-360Lib-101_ScalableRandomAccessAuto_360_ERP_4K_PlanEnergyBioLab_64Frm_ExtConv_Ref_qp_27/stream_EncoderSVVC360_VTM-91-360Lib-101_ScalableRandomAccessAuto_360_ERP_4K_PlanEnergyBioLab_64Frm_ExtConv_Ref_qp_27.yuv",
+]
+ArvApyStreamList[n].resolution_list = [
+    (3840,1920)
+]
+ArvApyStreamList[n].quality_list = [
+    "High"
+]
+ArvApyStreamList[n].projection = 0
+ArvApyStreamList[n].bytes_per_pixel = 1
+ArvApyStreamList[n].num_layers = 1
+ArvApyStreamList[n].summary_info_file = "/datasets/Finish_res_EncoderSVVC360_VTM-91-360Lib-101_ScalableRandomAccessAuto_360_ERP_4K_PlanEnergyBioLab_64Frm_ExtConv_Ref_qp_27/summary_EncoderSVVC360_VTM-91-360Lib-101_ScalableRandomAccessAuto_360_ERP_4K_PlanEnergyBioLab_64Frm_ExtConv_Ref_qp_27"
+
+
+n += 1
+ArvApyStreamList[n].name = "Porto River Side  (Single layer)"
+ArvApyStreamList[n].filename_list = [
+    "/datasets/Finish_res_EncoderSVVC360_VTM-91-360Lib-101_ScalableRandomAccessAuto_360_ERP_4K_PortoRiverside_64Frm_ExtConv_Ref_qp_27/stream_EncoderSVVC360_VTM-91-360Lib-101_ScalableRandomAccessAuto_360_ERP_4K_PortoRiverside_64Frm_ExtConv_Ref_qp_27.yuv",
+]
+ArvApyStreamList[n].resolution_list = [
+    (3840,1920)
+]
+ArvApyStreamList[n].quality_list = [
+    "High"
+]
+ArvApyStreamList[n].projection = 0
+ArvApyStreamList[n].bytes_per_pixel = 1
+ArvApyStreamList[n].num_layers = 1
+ArvApyStreamList[n].summary_info_file = "/datasets/Finish_res_EncoderSVVC360_VTM-91-360Lib-101_ScalableRandomAccessAuto_360_ERP_4K_PortoRiverside_64Frm_ExtConv_Ref_qp_27/summary_EncoderSVVC360_VTM-91-360Lib-101_ScalableRandomAccessAuto_360_ERP_4K_PortoRiverside_64Frm_ExtConv_Ref_qp_27"
 
 def GetListOfAvailableStreams():
     stream_list = []

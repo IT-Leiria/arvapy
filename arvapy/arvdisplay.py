@@ -209,5 +209,5 @@ class ArvApyDisplay:
         converted_frame = self.viewport_function_module.ConvertFrame(input_frame)
         # Currently make viewport bitrate be proportional to the total bitrate.
         # TODO: improve bitrate calculation
-        converted_frame = input_frame.bitrate * viewport_ratio
+        converted_frame.bitrate = input_frame.bitrate * viewport_ratio
         return converted_frame
