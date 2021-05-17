@@ -8,6 +8,7 @@ class Arv360Frame:
         self.projection = 0
         self.bytes_per_pixel = bpp
         self.layer = -1
+        self.bitrate = 9999
 
         if other is not None:
             self.data = other.data
@@ -15,6 +16,8 @@ class Arv360Frame:
             self.height = other.height
             self.projection = other.projection
             self.bytes_per_pixel = other.bytes_per_pixel
+            self.layer = other.layer
+            self.bitrate = other.bitrate
 
     def rawData(self):
         array = bytearray()
