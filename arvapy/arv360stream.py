@@ -49,9 +49,13 @@ class Arv360Stream:
 
     def LayerInformation(self):
         layer_info = []
-        for l in range( self.num_layers):
-            l_info = "Quality: %s | Resolution: %dx%d" % (self.quality_list[l], self.resolution_list[l][0], self.resolution_list[l][1] )
-            layer_info.append( (l, l_info) )
+        try:
+            for l in range( self.num_layers):
+                l_info = "Quality: %s | Resolution: %dx%d" % (self.quality_list[l], self.resolution_list[l][0], self.resolution_list[l][1] )
+                layer_info.append( (l, l_info) )
+        except:
+            l_info = "Quality: %s | Resolution: %dx%d" % (0, self.width, self.height )
+            layer_info.append( (0, l_info) )
         return layer_info
 
     def ReadSummaryInfo(self):
