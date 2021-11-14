@@ -121,7 +121,9 @@ class ArvApyDisplay:
         return self.Crop360DegreeFrameToFace(frame, projection, face_id )
 
     def Get360DegreeProjectionFace(self, projection, face_id, layer=-1):
-        frame = self.Get360DegreeFrameInfo(projection, layer)
+        # this case if for when we do not want the next frame
+        #frame = self.Get360DegreeFrameInfo(projection, layer)
+        frame = self.Get360DegreeFrame(projection, layer)
         return self.Crop360DegreeFrameToFace(frame, projection, face_id )
 
 
@@ -140,12 +142,12 @@ class ArvApyDisplay:
             print("Re-using buffered frame!")
             return frame
 
-        frame = self.Get360DegreeViewport(coord_type, x, y, width, height, layer)
+        frame = self.Get360DegreeViewport(coord_type, x, y, width, height, layer, next_frame=0)
         self.buffered_frame = frame
         self.has_buffered_frame = True
         return frame
 
-    def Get360DegreeViewport(self, coord_type, x, y, width, height, layer ):
+    def Get360DegreeViewport(self, coord_type, x, y, width, height, layer, next_frame ):
 
         layer = int(layer)
         # Always return the highest layer, regardless of the request
@@ -196,7 +198,11 @@ class ArvApyDisplay:
         # input_frame.projection = self.input_stream.projection
         # input_frame.data = self.input_stream.ReadFrame()
 
-        input_frame = self.last_read_frame
+        if next_frame:
+            input_frame = self.Get360DegreeFrame(layer=layer)
+        else:
+            input_frame = self.last_read_frame
+
         new_hash = hash( "aw"+str(angular_width)+"ah"+str(angular_height)+"vx"+str(viewport_center_x)+"vy"+str(viewport_center_y))
 
         # Configure conversion function

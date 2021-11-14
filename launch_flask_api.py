@@ -314,7 +314,9 @@ def GetViewportRaw():
     viewport_width = request.args.get("width", 90)
     viewport_height = request.args.get("height", 90)
     layer = request.args.get("layer", -1)
-    viewport = arvapy.display_module.Get360DegreeViewport(coordinates, viewport_x, viewport_y, viewport_width, viewport_height, layer)
+    next_frame = request.args.get("next_frame", 0)
+
+    viewport = arvapy.display_module.Get360DegreeViewport(coordinates, viewport_x, viewport_y, viewport_width, viewport_height, layer, next_frame)
     return viewport.rawData()
 
 @app.route('/get_viewport')
