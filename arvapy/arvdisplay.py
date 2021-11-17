@@ -6,7 +6,7 @@ class ArvApyDisplay:
     def __init__(self):
         self.convert_function_module = Arv360Convert()
         self.viewport_function_module = Arv360Convert()
-        self.input_stream = []
+        self.input_stream = None
         self.min_frame_size = 8
 
         self.has_buffered_frame = False
@@ -44,6 +44,9 @@ class ArvApyDisplay:
         This functions get a new frame in order to extract the information
         but buffers it until next call of Get360DegreeFrame
         """
+        if self.input_stream is None:
+            return Arv360Frame()
+
         layer = int(layer)
         # Always return the highest layer, regardless of the request
         if layer < 0 or layer > self.input_stream.num_layers:
@@ -60,6 +63,9 @@ class ArvApyDisplay:
         return frame
 
     def Get360DegreeFrame(self, projection="NA", layer=-1):
+
+        if self.input_stream is None:
+            return Arv360Frame()
 
         layer = int(layer)
         # Always return the highest layer, regardless of the request
@@ -100,6 +106,10 @@ class ArvApyDisplay:
         return self.convert_function_module.ConvertFrame(input_frame)
 
     def Crop360DegreeFrameToFace(self, org_frame, projection, face_id):
+
+        if self.input_stream is None:
+            return Arv360Frame()
+
         face_id = int( face_id )
         if projection == "CMP":
             face_y = int( face_id / 3)
@@ -132,6 +142,9 @@ class ArvApyDisplay:
         This functions get a new viewport in order to extract the information
         but buffers it untill next call of Get360DegreeViewport
         """
+        if self.input_stream is None:
+            return Arv360Frame()
+
         layer = int(layer)
         # Always return the highest layer, regardless of the request
         if layer < 0 or layer > self.input_stream.num_layers:
@@ -148,6 +161,9 @@ class ArvApyDisplay:
         return frame
 
     def Get360DegreeViewport(self, coord_type, x, y, width, height, layer, next_frame ):
+
+        if self.input_stream is None:
+            return Arv360Frame()
 
         layer = int(layer)
         # Always return the highest layer, regardless of the request
