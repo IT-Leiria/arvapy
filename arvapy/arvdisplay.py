@@ -12,7 +12,7 @@ class ArvApyDisplay:
         self.has_buffered_frame = False
         self.buffered_frame = []
 
-        self.last_read_frame = []
+        self.last_read_frame = None
 
     def SetStream(self, stream):
         self.input_stream = stream
@@ -221,6 +221,9 @@ class ArvApyDisplay:
             input_frame = self.Get360DegreeFrame(layer=layer)
         else:
             input_frame = self.last_read_frame
+
+        if input_frame is None or input_frame.data is None:
+            return Arv360Frame()
 
         new_hash = hash( "aw"+str(angular_width)+"ah"+str(angular_height)+"vx"+str(viewport_center_x)+"vy"+str(viewport_center_y))
 

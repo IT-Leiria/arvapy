@@ -163,6 +163,9 @@ class Arv360Convert(ArvFifo):
 
     def ConvertFrame(self, input_frame):
 
+        if input_frame.data is None or len(input_frame.data) == 0:
+            return Arv360Frame(input_frame)
+
         output_frame = Arv360Frame(input_frame)
         output_frame.width = self.receive_stream.width
         output_frame.height = self.receive_stream.height
