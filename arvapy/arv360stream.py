@@ -93,6 +93,11 @@ class Arv360Stream:
             pass
         return self.average_bitrate
 
+    def FrameSize(self, layer = -1):
+        if layer == -1:
+            layer = self.num_layers - 1
+        return self.GetWidth(layer) * self.GetHeight(layer) * self.bytes_per_pixel * 1.5
+
     def PrintInfo(self):
         if self.name is None:
             name = self.filename
