@@ -91,6 +91,9 @@ class ArvApyDisplay:
         input_frame.layer = layer
         input_frame.bitrate = self.input_stream.GetBitrate( layer )
 
+        if input_frame.data is None:
+            return input_frame
+
         self.last_read_frame = input_frame
 
         # Check if projection conversion is needed

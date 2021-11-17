@@ -132,11 +132,13 @@ class Arv360StreamInput(Arv360Stream):
     def ReadFrame(self, layer = -1):
         if layer == -1:
             layer = self.num_layers - 1
-        frame_size = self.GetWidth(layer) * self.GetHeight(layer) * self.bytes_per_pixel * 1.5
+        frame_size = self.FrameSize(layer)
         frame = self.binary_file[layer].read(int(frame_size))
         if frame is None or len(frame) != frame_size:
             self.binary_file[layer].seek(0)
             frame = self.binary_file[layer].read(int(frame_size))
+        if frame is None or len(frame) != frame_size:
+            return None
         return frame
 
 
